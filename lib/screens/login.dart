@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audi/backend/backend.dart';
 import 'homescreen.dart';
 import 'const.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:test_api/backend.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -49,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.mail),
+          prefixIcon: Icon(Icons.email),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
@@ -101,29 +103,32 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final loginButton = Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(10),
       color: buttonColor,
-      child: MaterialButton(
-          padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          minWidth: MediaQuery.of(context).size.width,
-          onPressed: () async {
-            try{
-              await auth.signinemailpass(emailController.text, passwordController.text)
-                  .then((value) => HomeScreen());
-            } catch(e){
-              print(e);
-            }
-          },
-          child: const Text(
-            "Login",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          )),
+      child: ScaffoldMessenger(
+        child: MaterialButton(
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+            minWidth: MediaQuery.of(context).size.width,
+            onPressed: () async {
+              try{
+                await auth.signinemailpass(emailController.text, passwordController.text)
+                    .then((value) => HomeScreen());
+              } catch(e){
+                showErrorSnackbar(context, e.toString());
+                print(e);
+              }
+            },
+            child: const Text(
+              "Login",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+            )),
+      ),
     );
     final register = Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(10),
       color: buttonColor,
       child: MaterialButton(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -133,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
               await auth.registeruser(emailController.text, passwordController.text)
                   .then((value) => HomeScreen());
             } catch(e){
+              showErrorSnackbar(context, e.toString());
               print(e);
             }
           },
@@ -161,12 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
           )),
     );
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        // title: Text("Login / Register", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),),
-        // centerTitle: true,
-        backgroundColor: Colors.white,
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),
@@ -175,26 +175,93 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
+                height: 60,
                 width: MediaQuery.of(context).size.width,
               ),
-              Image.asset('assets/gcek_logo.png', scale: 7,),
+              Image.asset('assets/gcek_logo.png', scale: 6,),
               SizedBox(height: 40,),
-              Text("Login", style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),),
+              Text("Login", style: TextStyle(fontSize: 40, fontFamily: 'Poppins'),),
               SizedBox(height: 30,),
               emailField,
               SizedBox(height: 20,),
               passwordField,
               SizedBox(height: 20,),
-              loginButton,
+          Material(
+            elevation: 5,
+            borderRadius: BorderRadius.circular(10),
+            color: buttonColor,
+            child: ScaffoldMessenger(
+              child: MaterialButton(
+                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  minWidth: MediaQuery.of(context).size.width,
+                  onPressed: () async {
+                    try{
+                      await auth.signinemailpass(emailController.text, passwordController.text)
+                          .then((value) => HomeScreen());
+                    } catch(e){
+                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
+                      print(e);
+                      showErrorSnackbar(context, e.toString());
+                    }
+                  },
+                  child: const Text(
+                    "Login",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                  )),
+            ),
+          ),
               SizedBox(height: 20,),
-              register,
+            Material(
+              elevation: 5,
+              borderRadius: BorderRadius.circular(10),
+              color: buttonColor,
+              child: MaterialButton(
+                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  minWidth: MediaQuery.of(context).size.width,
+                  onPressed: () async{
+                    try{
+                      await auth.registeruser(emailController.text, passwordController.text)
+                          .then((value) => HomeScreen());
+                    } catch(e){
+                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
+                      print(e);
+                      showErrorSnackbar(context, e.toString());
+                    }
+                  },
+                  child: const Text(
+                    "Register",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                  )),
+            ),
               GestureDetector(onTap: () async{
-                await auth.handleSignIn();
-              } ,child: Image.asset('assets/google.png')),
+                try{
+                  final GoogleSignInAccount? gAcc = await GoogleSignIn().signIn();
+                  final GoogleSignInAuthentication gAuth = await gAcc!.authentication;
+                  final credential = GoogleAuthProvider.credential(
+                      idToken: gAuth.idToken,
+                      accessToken: gAuth.accessToken
+                  );
+                  await FirebaseAuth.instance.signInWithCredential(credential).then((value) => HomeScreen());
+                } catch(e){
+                  showErrorSnackbar(context, e.toString());
+                }
+              } ,child: Image.asset('assets/google.png', scale: 1,)),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+void showErrorSnackbar(BuildContext context, String msg) {
+  final snackBar = SnackBar(
+    content: Text(msg),
+    duration: Duration(seconds: 3),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

@@ -1,3 +1,3 @@
 import 'package:flutter/material.dart';
 
-Color buttonColor = Colors.indigo;
+Color buttonColor = Color.fromARGB(255, 115, 91, 241);

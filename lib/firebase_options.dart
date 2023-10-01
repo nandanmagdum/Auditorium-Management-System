@@ -17,13 +17,19 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -46,29 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAJl9ACIrl5gBAb3yNPs7b_5VelfeiSGYg',
-    appId: '1:617045879095:web:0990a194c9aaadfba6d2b2',
-    messagingSenderId: '617045879095',
-    projectId: 'fir-96a0a',
-    authDomain: 'fir-96a0a.firebaseapp.com',
-    storageBucket: 'fir-96a0a.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCKVlhyTzEYVeBnw0gkRIeKXIa5scADs7c',
-    appId: '1:617045879095:android:157ca8d9a8b8b5dea6d2b2',
-    messagingSenderId: '617045879095',
-    projectId: 'fir-96a0a',
-    storageBucket: 'fir-96a0a.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCBDUNahXN_Kw6ZF7HFgi3Pn2sZLV7iO8M',
-    appId: '1:617045879095:ios:71afada6ef6af32ea6d2b2',
-    messagingSenderId: '617045879095',
-    projectId: 'fir-96a0a',
-    storageBucket: 'fir-96a0a.appspot.com',
-    iosBundleId: 'com.example.audi',
+    apiKey: 'AIzaSyCE82MBLY3m5uHC_KDzUrx9hrOpZ2bkzME',
+    appId: '1:419321420723:android:1d900137646686962709c6',
+    messagingSenderId: '419321420723',
+    projectId: 'auditorium-gcek-14',
+    storageBucket: 'auditorium-gcek-14.appspot.com',
   );
 }
