@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "204337705331",
+    "project_id": "flashhchat-fc10a",
+    "storage_bucket": "flashhchat-fc10a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204337705331:android:c104dc5a7c7345e355d506",
+        "android_client_info": {
+          "package_name": "com.example.add_event_page"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcCuy6WDjMoS1aGozFagMfUTcrYe6tEHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
