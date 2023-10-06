@@ -1,4 +1,4 @@
-# add_event_page
+# Event_page
 
 A new Flutter project.
 
