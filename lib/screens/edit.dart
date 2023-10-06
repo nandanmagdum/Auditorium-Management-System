@@ -12,7 +12,9 @@ class EditScreen extends StatefulWidget {
 class _EditScreenState extends State<EditScreen> {
   @override
   Widget build(BuildContext context) {
-    String? data1, data2, data3;
+    TextEditingController data1 = TextEditingController(text: widget.message.data()['name']);
+    TextEditingController data2 = TextEditingController(text: widget.message.data()['roll no']);
+    TextEditingController data3 = TextEditingController(text: widget.message.data()['cgpa']);
     return Scaffold(
       appBar: AppBar(
         title: Text("Edit details for " + widget.message.data()['name']),
@@ -23,26 +25,29 @@ class _EditScreenState extends State<EditScreen> {
         children: [
               SizedBox(width: MediaQuery.of(context).size.width,),
               TextField(
+                controller: data1,
                 onChanged: (value){
-                  data1 = value;
+                  data1.text = value;
                 },
               ),
               TextField(
+                controller: data2,
                 onChanged: (value){
-                  data2 = value;
+                  data2.text = value;
                 },
               ),
               TextField(
+                controller: data3,
                 onChanged: (value){
-                  data3 = value;
+                  data3.text = value;
                 },
               ),
           ElevatedButton(onPressed: () async{
             try{
               await FirebaseFirestore.instance.collection('sampleData').doc(widget.message.reference.id).update({
-                'name': data1,
-                'roll no': data2,
-                'cgpa': data3
+                'name': data1.text,
+                'roll no': data2.text,
+                'cgpa': data3.text
               });
               Navigator.pop(context);
               print("$data1 $data2 $data3");

@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Auth auth = Auth();
     User? user = FirebaseAuth.instance.currentUser;
     String? usser = user?.email;
-    late String data1 = "default";
-    late String data2 = "default";
-    late String data3 = "default";
+    TextEditingController data1 = TextEditingController();
+    TextEditingController data2 = TextEditingController();
+    TextEditingController data3 = TextEditingController();
     FirebaseFirestore _fire = FirebaseFirestore.instance;
     CollectionReference _collection = _fire.collection('sampleData');
     void getDataStream() async {
@@ -94,18 +94,21 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
               ),
               TextField(
+                controller: data1,
                 onChanged: (value) {
-                  data1 = value;
+                  data1.text = value;
                 },
               ),
               TextField(
+                controller: data2,
                 onChanged: (value) {
-                  data2 = value;
+                  data2.text = value;
                 },
               ),
               TextField(
+                controller: data3,
                 onChanged: (value) {
-                  data3 = value;
+                  data3.text = value;
                 },
               ),
               ElevatedButton(
@@ -114,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     try {
                       await _fire
                           .collection('sampleData')
-                          .add({"name": data1 != null? data1 : 'value is null', "roll no": data2 != null ? data2 : 'value is null', "cgpa": data3 != null? data3: 'value is null'});
+                          .add({"name": data1.text, "roll no": data2.text, "cgpa": data3.text});
                       print("data sent");
                     } catch (e) {
                       print(e);
