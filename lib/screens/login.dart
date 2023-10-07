@@ -16,10 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Auth auth = Auth();
   // form key
   final _formKey = GlobalKey<FormState>();
-
+  Color adminColor = notselected;
+  Color ClubColor = notselected;
+  Color StudentColor = selected;
+  String role = "student";
   // editing controller
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  List<String> roles = ['Admin', 'Club Co-ordinator', 'Student'];
+  var selectedItem = 'Student';
   bool IsPassVisible = false;
   Icon suffix = const Icon(Icons.remove_red_eye_outlined);
   // firebase
@@ -185,7 +190,47 @@ class _LoginScreenState extends State<LoginScreen> {
               emailField,
               SizedBox(height: 20,),
               passwordField,
-              SizedBox(height: 20,),
+              SizedBox(height: 5,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("Login as: ", style: TextStyle(fontSize: 16),),
+                  GestureDetector(onTap: (){
+                    setState(() {
+                      role = "admin";
+                      print("admin selecrted");
+                      adminColor = selected;
+                      ClubColor = notselected;
+                      StudentColor = notselected;
+                    });
+                  },child: Container(margin: EdgeInsets.all(3),padding: EdgeInsets.all(2),color: adminColor,child: Text("Admin", style: TextStyle(fontSize: 16),),)),
+                  GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      role = "club";
+                      print("Club selecrted");
+                      adminColor = notselected;
+                      ClubColor = selected;
+                      StudentColor = notselected;
+                    });
+                  }
+                  ,child: Container(margin: EdgeInsets.all(3),padding: EdgeInsets.all(2),color: ClubColor,child: Text("Club Coordinator", style: TextStyle(fontSize: 16),),)),
+                  GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      role = "student";
+                      print("club selecrted");
+                      adminColor = notselected;
+                      ClubColor = notselected;
+                      StudentColor = selected;
+                    });
+                  },
+                      child: Container(margin: EdgeInsets.all(3),padding: EdgeInsets.all(2),color: StudentColor,child: Text("Student", style: TextStyle(fontSize: 16),),)),
+
+                ],
+              ),
+              SizedBox(height: 5,),
           Material(
             elevation: 5,
             borderRadius: BorderRadius.circular(10),
@@ -195,6 +240,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async {
+                    if(adminColor == selected && emailController.text != 'n@gmail.com'){
+                        showErrorSnackbar(context, "YOU ARE NOT ADMIN");
+                        return ;
+                    }
                     try{
                       await auth.signinemailpass(emailController.text, passwordController.text)
                           .then((value) => HomeScreen());
@@ -221,6 +270,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async{
+                    if(adminColor == selected) {
+                      showErrorSnackbar(context, "Admin cannot be created");
+                      return ;
+                    }
                     try{
                       await auth.registeruser(emailController.text, passwordController.text)
                           .then((value) => HomeScreen());
