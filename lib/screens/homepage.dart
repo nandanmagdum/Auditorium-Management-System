@@ -1,7 +1,10 @@
 import 'dart:ffi';
 import 'dart:math';
 import 'dart:ui';
+import 'package:audi/screens/Event_screen.dart';
 import 'package:audi/screens/const.dart';
+import 'package:audi/screens/request2.dart';
+import 'package:audi/screens/requests.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/src/rendering/box.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,8 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'requests.dart';
+import 'Event_screen.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
 Color getRandomColor() {
@@ -107,6 +112,7 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.add_alert_outlined),
                 title: const Text('Auditorium Requests'),
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Requests2()));
                 },
               ),
 
@@ -137,7 +143,7 @@ class _HomePageState extends State<HomePage> {
             color: Color(0xFFFAF9F9),
             child: Column(
               children: [
-                Text('${selectedDate.day} ${selectedDate.month} ${selectedDate.year}'),
+                // Text('${selectedDate.day} ${selectedDate.month} ${selectedDate.year}'),
                 Flexible(
                   child: CalendarCarousel(
                     onDayPressed: (DateTime date, List<EventInterface> events){
@@ -230,6 +236,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         floatingActionButton: ElevatedButton(onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EventPage()));
           print("Book a slot");
         },child: Icon(Icons.add,),),
       ),
