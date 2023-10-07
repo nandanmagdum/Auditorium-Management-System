@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audi/backend/backend.dart';
-import 'homescreen.dart';
+// import 'homescreen.dart';
 import 'const.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:test_api/backend.dart';
+import 'homepage.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -117,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () async {
               try{
                 await auth.signinemailpass(emailController.text, passwordController.text)
-                    .then((value) => HomeScreen());
+                    .then((value) => HomePage());
               } catch(e){
                 showErrorSnackbar(context, e.toString());
                 print(e);
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
           onPressed: () async{
             try{
               await auth.registeruser(emailController.text, passwordController.text)
-                  .then((value) => HomeScreen());
+                  .then((value) => HomePage());
             } catch(e){
               showErrorSnackbar(context, e.toString());
               print(e);
@@ -246,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     try{
                       await auth.signinemailpass(emailController.text, passwordController.text)
-                          .then((value) => HomeScreen());
+                          .then((value) => HomePage());
                     } catch(e){
                       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
                       print(e);
@@ -276,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     try{
                       await auth.registeruser(emailController.text, passwordController.text)
-                          .then((value) => HomeScreen());
+                          .then((value) => HomePage());
                     } catch(e){
                       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
                       print(e);
@@ -298,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       idToken: gAuth.idToken,
                       accessToken: gAuth.accessToken
                   );
-                  await FirebaseAuth.instance.signInWithCredential(credential).then((value) => HomeScreen());
+                  await FirebaseAuth.instance.signInWithCredential(credential).then((value) => HomePage());
                 } catch(e){
                   showErrorSnackbar(context, e.toString());
                 }
