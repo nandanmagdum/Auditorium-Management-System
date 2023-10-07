@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:audi/screens/Event_screen.dart';
 import 'package:audi/screens/const.dart';
 import 'package:audi/screens/request2.dart';
-import 'package:audi/screens/requests.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/src/rendering/box.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'requests.dart';
+import 'finalSlots.dart';
 import 'Event_screen.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
@@ -32,55 +31,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<EventData> events = [
-    EventData(
-      timeRange: '10:00 - 12:00',
-      eventName: 'Alpha Geeks Session',
-      eventDescription: 'The session is based on the importance ...',
-      dotColor: getRandomColor(),
-    ),
-    EventData(
-      timeRange: '14:00 - 15:00',
-      eventName: 'TPO Event',
-      eventDescription: 'Practice group discussion activity...view more',
-      dotColor: getRandomColor(),
-    ),
-    EventData(
-      timeRange: '14:00 - 15:00',
-      eventName: 'Cultural Committee',
-      eventDescription: 'Our cultural committee is introducing',
-      dotColor: getRandomColor(),
-    ),
-    EventData(
-      timeRange: '14:00 - 15:00',
-      eventName: 'Cultural Committee',
-      eventDescription: 'Our cultural committee is introducing',
-      dotColor: getRandomColor(),
-    ),
-    EventData(
-      timeRange: '14:00 - 15:00',
-      eventName: 'Cultural Committee',
-      eventDescription: 'Our cultural committee is introducing',
-      dotColor: getRandomColor(),
-    ),
-    EventData(
-      timeRange: '14:00 - 15:00',
-      eventName: 'Cultural Committee',
-      eventDescription: 'Our cultural committee is introducing',
-      dotColor: getRandomColor(),
-    ),
-    EventData(
-      timeRange: '14:00 - 15:00',
-      eventName: 'Cultural Committee',
-      eventDescription: 'Our cultural committee is introducing',
-      dotColor: getRandomColor(),
-    ),
-  ];
-
   DateTime selectedDate = DateTime.now();
-
+  String? strSelectedDate = DateTime.now().toString().substring(0,10);
   @override
   Widget build(BuildContext context) {
+    print(selectedDate);
+    print(strSelectedDate);
+    // print(strSelectedDate);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -113,6 +70,13 @@ class _HomePageState extends State<HomePage> {
                 title: const Text('Auditorium Requests'),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => Requests2()));
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.add_alert_outlined),
+                title: const Text('Booked Slots'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FinalSlots()));
                 },
               ),
 
@@ -149,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                     onDayPressed: (DateTime date, List<EventInterface> events){
                       setState(() {
                         selectedDate = date;
+                        strSelectedDate = selectedDate.toString().substring(0, 10);
                       });
                     },
                     selectedDateTime: selectedDate,
@@ -197,9 +162,6 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black,
                       ),
                     ),
-
-                    ///////////////////////////////////////
-
                     todayTextStyle:
                         TextStyle(backgroundColor: Color(0xFF735BF2)),
                     weekdayTextStyle: TextStyle(color: Color(0xFF8F9BB3)),
@@ -223,10 +185,99 @@ class _HomePageState extends State<HomePage> {
                         colors: <Color>[Colors.white10, Colors.white],
                       ).createShader(bounds);
                     },
-                    child: ListView.builder(
-                      itemCount: events.length,
-                      itemBuilder: (context, index) {
-                        return EventCard(eventData: events[index]);
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection('finalEvents').where('date', isEqualTo: strSelectedDate).snapshots(),
+                      builder: (context, snapshot){
+                        if(!snapshot.hasData){
+                          return CircularProgressIndicator();
+                        }
+                        final messages = snapshot.data!.docs;
+                        List<Padding> card = [];
+                        for(var message in messages){
+                          card.add(
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+                              child: Container(
+                                height: 125,
+                                width: 350,
+                                margin: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    border: Border.all(
+                                      color: Colors.black26,
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black45,
+                                          spreadRadius: 0.1,
+                                          blurRadius: 5.0,
+                                          offset: Offset(0, 0))
+                                    ]),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 16.0,
+                                            height: 16.0,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: getRandomColor(),
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.0),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "${message.data()['startTime'].toString()}",
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              Text("  -  "),
+                                              Text(
+                                                "${message.data()['endTime'].toString()}",
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        "${message.data()['eventName'].toString()}",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        "${message.data()['description'].toString()}",
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return ListView(
+                          children: card,
+                        );
                       },
                     ),
                   ),

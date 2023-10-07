@@ -1,6 +1,7 @@
 
 import 'package:audi/screens/homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Requests2 extends StatefulWidget {
@@ -17,7 +18,7 @@ class _RequestsState extends State<Requests2> {
       appBar: AppBar(
         toolbarHeight: 65,
         title: Text(
-          'Requested Time Slots',
+          'Pending Requests',
           style: TextStyle(color: Color(0xFF222B45)),
         ),
         centerTitle: true,
@@ -36,7 +37,7 @@ class _RequestsState extends State<Requests2> {
                 newCard.add(Padding(
                   padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: Container(
-                    height: 165,
+                    height: 170,
                     width: 350,
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
@@ -69,12 +70,24 @@ class _RequestsState extends State<Requests2> {
                                 ),
                               ),
                               SizedBox(width: 8.0),
-                              Text(
-                                "${message.data()['startTime'].toString()}",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.grey,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${message.data()['startTime'].toString()}",
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Text(" - "),
+                                  Text(
+                                    "${message.data()['endTime'].toString()}",
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -86,18 +99,42 @@ class _RequestsState extends State<Requests2> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: 8.0),
                           Text(
-                            "${message.data()['description'].toString()}",
+                            "${message.data()['organizer'].toString()}",
                             style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.grey,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
+                          SizedBox(height: 8.0),
+                          // Text(
+                          //   "${message.data()['description']}",
+                          //   style: TextStyle(
+                          //     fontSize: 12.0,
+                          //     color: Colors.grey,
+                          //   ),
+                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              ElevatedButton(onPressed: (){}, child: Text("Accept",), style: ElevatedButton.styleFrom(primary: Colors.green),),
+                              ElevatedButton(onPressed: () async{
+                                  try{
+                                    print("Data is sending");
+                                    await FirebaseFirestore.instance.collection('finalEvents').add({
+                                      'eventName': message.data()['eventName'],
+                                      'organizer' :message.data()['organizer'],
+                                      'description': message.data()['description'],
+                                      'date': message.data()['date'],
+                                      'startTime': message.data()['startTime'],
+                                      'endTime': message.data()['endTime'],
+                                      'category': message.data()['category'],
+                                    });
+                                    print("data sent");
+                                    await FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
+                                  }catch(e){
+                                    print(e);
+                                  }
+                              }, child: Text("Accept",), style: ElevatedButton.styleFrom(primary: Colors.green),),
                               ElevatedButton(onPressed: () async{
                                             try{
                                               await FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
@@ -113,39 +150,6 @@ class _RequestsState extends State<Requests2> {
                     ),
                   ),
                 ),
-                );
-                card.add(
-                    Card(
-                      color: Colors.grey,
-                      child: Column(
-                        children: [
-                          Text("${message.data()['startTime'].toString()} - ${message.data()['endTime'].toString()}"),
-                          Text(message.data()['eventName'].toString(), style: TextStyle(fontSize: 25),),
-                          Text(message.data()['organizer'].toString(), ),
-                          Text(message.data()['date'].toString(),),
-                          // GestureDetector(onTap: (){
-                          //
-                          //   print(message.reference.id);
-                          // } ,child: Icon(Icons.edit)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(onPressed: (){}, child: Text("Accept"),),
-                              SizedBox(width: 10,),
-                              ElevatedButton(onPressed: (){}, child: Text("Reject")),
-                              SizedBox(width: 10,),
-                              // GestureDetector(child: Icon(Icons.delete), onTap: (){
-                              //   print(message.reference.id);
-                              //   print("deleting data");
-                              //   FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
-                              //   print("deleted finally");
-                              // },),
-                            ],
-                          ),
-
-                        ],
-                      ),
-                    )
                 );
               }
               return ListView(
