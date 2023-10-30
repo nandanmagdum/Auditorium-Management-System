@@ -21,6 +21,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        // fontFamily:
+      ),
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),

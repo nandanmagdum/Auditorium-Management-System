@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Auth{
+  static email_pass_sign_in(String email, String password) async{
+
+  }
   googleSIGN() async {
     final GoogleSignInAccount? gAcc = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication gAuth = await gAcc!.authentication;
