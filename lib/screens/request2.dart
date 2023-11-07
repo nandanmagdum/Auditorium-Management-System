@@ -117,6 +117,57 @@ class _RequestsState extends State<Requests2> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
+                              ElevatedButton(onPressed: (){
+                                showModalBottomSheet(context: context,
+                                    builder: (builder){
+                                      return Scaffold(
+                                        backgroundColor: Colors.white10,
+                                        appBar: AppBar(backgroundColor: Colors.white10,title: Text("Event Details"),centerTitle: true,),
+                                        body: Container(
+                                          height: MediaQuery.of(context).size.height,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(50.0),
+                                              topRight: Radius.circular(50.0),
+                                            ),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                // mainAxisAlignment: MainAxisAlignment.center,
+                                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                                children:
+                                                [
+                                                  SizedBox(height: 20,),
+                                                  Text("Event: ${message.data()['eventName'].toString()}", style: TextStyle(fontSize: 30, color: Colors.grey, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
+                                                  SizedBox(height: 10,),
+                                                  Text("Organizer: ${message.data()['organizer']}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
+                                                  SizedBox(height: 10,),
+                                                  Text("Date: ${date_parse(message.data()['date'].toString())}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  SizedBox(height: 10,),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      Text("${message.data()['startTime'].toString()}  to  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      Text("${message.data()['endTime'].toString()}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 10,),
+                                                  Text("Event Desciption: ", style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  SizedBox(height: 10,),
+                                                  Text("${message.data()['description'].toString()}", style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                );
+                              },
+                                  child: Text("View details")),
                               ElevatedButton(onPressed: () async{
                                   try{
                                     print("Data is sending");

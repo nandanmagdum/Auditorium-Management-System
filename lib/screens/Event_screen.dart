@@ -208,7 +208,9 @@ class _EventPageState extends State<EventPage> {
                   elevation: 5.0,
                   child: MaterialButton(
                     onPressed: () async{
-                      print("data is sending");
+                      ///////////////
+                      // verfy that data is valid
+                      /////////////
                       try{
                         await FirebaseFirestore.instance.collection('requestedEvents').add({
                           'eventName' : EventName.text,
@@ -249,7 +251,7 @@ class _EventPageState extends State<EventPage> {
     DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
+        firstDate: DateTime.now(),
         lastDate: DateTime(2100));
     if (picked != null) {
       setState(() {

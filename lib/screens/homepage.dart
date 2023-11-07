@@ -17,116 +17,68 @@ import 'Event_screen.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 
-EventList<Event> getEventDates() {
-  EventList<Event> eventDates = EventList<Event>(events: {});
+Future<void> getDatesForDots() async {
+// Get a reference to the Firebase Firestore database.
+FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+// Create a query to retrieve all of the events that happened on the current date.
+Query<Map<String, dynamic>> query = firestore.collection('events');
+
+// Get the results of the query.
+QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+
+// Get the list of documents from the snapshot.
+List<DocumentSnapshot<Map<String, dynamic>>> documents = snapshot.docs;
+
+// Iterate over the results of the query and print the name of each event.
+for (final documentSnapshot in documents) {
+final eventName = documentSnapshot['eventName'];
+
+print(eventName);
+}
+}
+
+EventList<Event> getEventDates() {
+  print("getEvents funtion called !!!!");
+
+  print("is this event a calling funtion!");
+  Map<String, int> map = {};
+  EventList<Event> eventDates = EventList<Event>(events: {});
   // Replace this with your logic to fetch event data from Firestore or any other source
   // For this example, I'm adding some dummy data
-
-  StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('finalEvents').snapshots(),
-      builder: (context, snapshot){
-        if(snapshot.hasData){
-          final messages = snapshot.data!.docs;
-          List<Padding> newCard = [];
-          for(var message in messages){
-            print('${message['date'].substring(0, 4)} ${message['date'].substring(5, 7)}  ${message['date'].substring(8, 10)}');
-            eventDates.add(DateTime(message['date'].substring(0, 4), message['date'].substring(5, 7), message['date'].substring(8, 10)), Event(
-              date: DateTime(2023, 10, 31),
-              icon: _getEventIcon(1),
-              dot: Container(
-                margin: EdgeInsets.symmetric(horizontal: 1.0),
-                color: Colors.blue,
-                width: 4.0,
-                height: 4.0,
-              ),
-            ));
-            newCard.add(Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-              child: Container(
-                height: 125,
-                width: 350,
-                margin: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: Colors.black26,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black45,
-                          spreadRadius: 0.1,
-                          blurRadius: 5.0,
-                          offset: Offset(0, 0))
-                    ]),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 16.0,
-                            height: 16.0,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: getRandomColor(),
-                            ),
-                          ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            "${message.data()['startTime'].toString()}",
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        "${message.data()['eventName'].toString()}",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        "${message.data()['description'].toString()}",
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            );
-          }
-          return ListView(
-            children: newCard,
-          );
-        }
-        return Center(
-          child: CircularProgressIndicator( backgroundColor: Colors.blueAccent,),
-        );
-      }
-  );
-
+  // Query<Map<String, dynamic>> query = FirebaseFirestouthmn re.instance.collectionGroup('fialEvents');
+  // QuerySnapshot<Map<String, dynamic>> snapshot =
   eventDates.add(
-    DateTime(2023, 11, 10),
+    DateTime(2023, 11, 4),
     Event(
-      date: DateTime(2023, 11, 10),
+      date: DateTime(2023, 11, 4),
+      icon: _getEventIcon(4),
+      dot: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 1.0),
+            color: Colors.yellow, // Color of the dot
+            width: 4.0,
+            height: 4.0,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 1.0),
+            color: Colors.yellow, // Color of the dot
+            width: 4.0,
+            height: 4.0,
+          ),
+        ],
+      )
+    ),
+  );
+  eventDates.add(
+    DateTime(2023, 11, 4),
+    Event(
+      date: DateTime(2023, 11, 4),
       icon: _getEventIcon(2),
       dot: Container(
         margin: EdgeInsets.symmetric(horizontal: 1.0),
-        color: Colors.green, // Color of the dot
+        color: Colors.yellow, // Color of the dot
         width: 4.0,
         height: 4.0,
       ),
@@ -430,7 +382,7 @@ class _HomePageState extends State<HomePage> {
                                               Text(
                                                 "${message.data()['startTime'].toString()}",
                                                 style: TextStyle(
-                                                  fontSize: 12.0,
+                                                  fontSize: 14.0,
                                                   color: Colors.grey,
                                                 ),
                                               ),
@@ -438,9 +390,17 @@ class _HomePageState extends State<HomePage> {
                                               Text(
                                                 "${message.data()['endTime'].toString()}",
                                                 style: TextStyle(
-                                                  fontSize: 12.0,
+                                                  fontSize: 14.0,
                                                   color: Colors.grey,
                                                 ),
+                                              ),
+                                              SizedBox(width: 20,),
+                                              Text(
+                                                  "Date: ${date_parse(message.data()['date'].toString())}",
+                                                style: TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.grey,
+                                              ),
                                               ),
                                             ],
                                           ),
@@ -448,7 +408,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       SizedBox(height: 8.0),
                                       Text(
-                                        "${message.data()['eventName'].toString()}",
+                                        "Event: ${message.data()['eventName'].toString()}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.w500,
@@ -456,11 +416,81 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       SizedBox(height: 8.0),
                                       Text(
-                                        "${message.data()['description'].toString()}",
+                                        "Organizer: ${message.data()['organizer'].toString()}",
                                         style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.grey,
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.w400,
                                         ),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            child: Text(
+                                              "${message.data()['description'].toString()}",
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.grey,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            width: 250,
+                                            height: 30,
+                                          ),
+                                          GestureDetector(
+                                          onTap: (){
+                                            showModalBottomSheet(context: context,
+                                                builder: (builder){
+                                                      return Scaffold(
+                                                        backgroundColor: Colors.white10,
+                                                        appBar: AppBar(backgroundColor: Colors.white10,title: Text("Event Details"),centerTitle: true,),
+                                                        body: Container(
+                                                          height: MediaQuery.of(context).size.height,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(50.0),
+                                                              topRight: Radius.circular(50.0),
+                                                            ),
+                                                          ),
+                                                          child: SingleChildScrollView(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: Column(
+                                                                // mainAxisAlignment: MainAxisAlignment.center,
+                                                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                                                children:
+                                                                  [
+                                                                    SizedBox(height: 20,),
+                                                                  Text("Event: ${message.data()['eventName'].toString()}", style: TextStyle(fontSize: 30, color: Colors.grey, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
+                                                                  SizedBox(height: 10,),
+                                                                  Text("Organizer: ${message.data()['organizer']}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
+                                                                    SizedBox(height: 10,),
+                                                                  Text("Date: ${date_parse(message.data()['date'].toString())}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                                    SizedBox(height: 10,),
+                                                                    Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                                      Text("${message.data()['startTime'].toString()}  to  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                                      Text("${message.data()['endTime'].toString()}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                                    ],
+                                                                  ),
+                                                                    SizedBox(height: 10,),
+                                                                    Text("Event Desciption: ", style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                                    SizedBox(height: 10,),
+                                                                    Text("${message.data()['description'].toString()}", style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                }
+                                            );
+                                          }
+                                          ,child: Text("...View More")),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -499,6 +529,15 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// message.data()['date'].toString()
+
+String date_parse(String date){
+  String parsed_date="";
+  parsed_date = parsed_date + date[8] + date[9] + "/";
+  parsed_date = parsed_date + date[5] + date[6] + "/";
+  parsed_date = parsed_date + date[0] + date[1] + date[2] + date[3];
+  return parsed_date;
+}
 class user{
   String email;
   String role;

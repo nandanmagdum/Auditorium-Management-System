@@ -329,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
                     },
                     child: const Text(
-                      "Regiser",
+                      "Register",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 20,

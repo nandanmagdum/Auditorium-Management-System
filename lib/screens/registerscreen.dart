@@ -216,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                   child: const Text(
-                    "Regiser",
+                    "Register",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 20,
