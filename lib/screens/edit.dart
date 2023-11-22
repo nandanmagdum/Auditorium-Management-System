@@ -1,9 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class EditScreen extends StatefulWidget {
   final message;
-  EditScreen({super.key, required this.message});
+  const EditScreen({super.key, required this.message});
 
   @override
   State<EditScreen> createState() => _EditScreenState();
@@ -54,10 +53,10 @@ class _EditScreenState extends State<EditScreen> {
             } catch(e){
               print(e);
             }
-          }, child: Text("Edit data"),),
+          }, child: const Text("Edit data"),),
           ElevatedButton(onPressed: (){
             Navigator.pop(context);
-          }, child: Text("Cancel"),),
+          }, child: const Text("Cancel"),),
         ],
       ),
     );

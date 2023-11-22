@@ -1,41 +1,35 @@
-import 'package:audi/screens/homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-class FinalSlots extends StatefulWidget {
-  const FinalSlots({super.key});
+import 'const.dart';
+import 'homepage.dart';
+class UpcomingEvents extends StatefulWidget {
+  const UpcomingEvents({super.key});
 
   @override
-  State<FinalSlots> createState() => _FinalSlotsState();
+  State<UpcomingEvents> createState() => _UpcomingEventsState();
 }
 
-class _FinalSlotsState extends State<FinalSlots> {
+class _UpcomingEventsState extends State<UpcomingEvents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 65,
-        title: const Text(
-          'Booked Slots',
-          style: TextStyle(color: Color(0xFF222B45)),
-        ),
+        title: const Text("Upcoming Events", style: TextStyle(color: Colors.black),),
         centerTitle: true,
-        backgroundColor: const Color(0xFFD9D9D9),
-        shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(20)),
+        backgroundColor: appBarColor,
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('finalEvents').orderBy('date').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             print('aasdadsad');
-            return const Text("No data");   
+            return const Text("No data");
           }
           final messages = snapshot.data!.docs;
           List<Padding> card = [];
           for (var message in messages) {
             int comparisonResult = DateTime.parse(message.data()['date'] + " 00:00:00").compareTo(DateTime.now());
-            {
+            if(comparisonResult >= 0) {
               card.add(
                 Padding(
                   padding: const EdgeInsets.only(
@@ -210,5 +204,3 @@ class _FinalSlotsState extends State<FinalSlots> {
     );
   }
 }
-
-

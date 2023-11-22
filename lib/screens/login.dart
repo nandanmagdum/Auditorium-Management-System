@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audi/backend/backend.dart';
 import 'const.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'homepage.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -57,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.email),
+          prefixIcon: const Icon(Icons.email),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
@@ -119,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 await auth
                     .signinemailpass(
                         emailController.text, passwordController.text)
-                    .then((value) => HomePage());
+                    .then((value) => const HomePage());
               } catch (e) {
                 showErrorSnackbar(context, e.toString());
                 print(e);
@@ -146,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
             try {
               await auth
                   .registeruser(emailController.text, passwordController.text)
-                  .then((value) => HomePage());
+                  .then((value) => const HomePage());
             } catch (e) {
               showErrorSnackbar(context, e.toString());
               print(e);
@@ -179,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -192,22 +191,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 'assets/gcek_logo.png',
                 scale: 6,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
-              Text(
+              const Text(
                 "Login",
                 style: TextStyle(fontSize: 40, fontFamily: 'Poppins'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               emailField,
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               passwordField,
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               // Row(
@@ -277,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
               //         )),
               //   ],
               // ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Material(
@@ -298,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           await auth
                               .signinemailpass(
                                   emailController.text, passwordController.text)
-                              .then((value) => HomePage());
+                              .then((value) => const HomePage());
                         } catch (e) {
                           // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
                           print(e);
@@ -315,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       )),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Material(
@@ -326,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                     minWidth: MediaQuery.of(context).size.width,
                     onPressed: ()  {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterScreen()));
                     },
                     child: const Text(
                       "Register",
@@ -337,27 +336,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold),
                     )),
               ),
-              GestureDetector(
-                  onTap: () async {
-                    try {
-                      final GoogleSignInAccount? gAcc =
-                          await GoogleSignIn().signIn();
-                      final GoogleSignInAuthentication gAuth =
-                          await gAcc!.authentication;
-                      final credential = GoogleAuthProvider.credential(
-                          idToken: gAuth.idToken,
-                          accessToken: gAuth.accessToken);
-                      await FirebaseAuth.instance
-                          .signInWithCredential(credential)
-                          .then((value) => HomePage());
-                    } catch (e) {
-                      showErrorSnackbar(context, e.toString());
-                    }
-                  },
-                  child: Image.asset(
-                    'assets/google.png',
-                    scale: 1,
-                  )),
+              // GestureDetector(
+              //     onTap: () async {
+              //       try {
+              //         final GoogleSignInAccount? gAcc =
+              //             await GoogleSignIn().signIn();
+              //         final GoogleSignInAuthentication gAuth =
+              //             await gAcc!.authentication;
+              //         final credential = GoogleAuthProvider.credential(
+              //             idToken: gAuth.idToken,
+              //             accessToken: gAuth.accessToken);
+              //         await FirebaseAuth.instance
+              //             .signInWithCredential(credential)
+              //             .then((value) => HomePage());
+              //       } catch (e) {
+              //         showErrorSnackbar(context, e.toString());
+              //       }
+              //     },
+              //     child: Image.asset(
+              //       'assets/google.png',
+              //       scale: 1,
+              //     )),
             ],
           ),
         ),
@@ -369,7 +368,7 @@ class _LoginScreenState extends State<LoginScreen> {
 void showErrorSnackbar(BuildContext context, String msg) {
   final snackBar = SnackBar(
     content: Text(msg),
-    duration: Duration(seconds: 3),
+    duration: const Duration(seconds: 3),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

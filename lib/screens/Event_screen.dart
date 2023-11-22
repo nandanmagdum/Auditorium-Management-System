@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({super.key});
@@ -33,6 +34,7 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final auth = FirebaseAuth.instance.currentUser;
     final screenHeight = mediaQuery.size.height;
     final screenWidth = mediaQuery.size.width;
     final deviceOrientation = mediaQuery.orientation;
@@ -104,7 +106,7 @@ class _EventPageState extends State<EventPage> {
                 style: const TextStyle(color: Colors.black),
                 decoration: kStartBoxDecoration.copyWith(
                   hintText: 'Date',
-                  suffixIcon: Icon(
+                  suffixIcon: const Icon(
                     Icons.calendar_today,
                     color: Colors.grey,
                   ),
@@ -128,7 +130,7 @@ class _EventPageState extends State<EventPage> {
                       style: const TextStyle(color: Colors.black),
                       decoration: kStartBoxDecoration.copyWith(
                         hintText: 'Start',
-                        suffixIcon: Icon(
+                        suffixIcon: const Icon(
                           Icons.access_time_rounded,
                           color: Colors.grey,
                         ),
@@ -156,17 +158,17 @@ class _EventPageState extends State<EventPage> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
               ),
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Select Catagory',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
               ),
               Align(
@@ -175,13 +177,13 @@ class _EventPageState extends State<EventPage> {
                   child: DropdownButtonFormField(
                     items: _catagory.map((e) {
                       return DropdownMenuItem(
+                          value: e,
                           child: Text(
                             e,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                             ),
-                          ),
-                          value: e);
+                          ));
                     }).toList(),
                     onChanged: (val) {
                       setState(() {
@@ -197,47 +199,109 @@ class _EventPageState extends State<EventPage> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 90.0,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Material(
                   color: Colors.indigoAccent,
                   borderRadius: BorderRadius.circular(30.0),
                   elevation: 5.0,
                   child: MaterialButton(
-                    onPressed: () async{
-                      ///////////////
-                      // verfy that data is valid
-                      /////////////
-                      try{
-                        await FirebaseFirestore.instance.collection('requestedEvents').add({
-                          'eventName' : EventName.text,
-                          'organizer': Organizer.text,
-                          'description': EventDescription.text,
-                          'date': _dateController.text,
-                          'startTime': _timeController.text,
-                          'endTime': _timeController1.text,
-                          'category': _selectedValue
-                        });
-                        Navigator.pop(context);
-                      } catch(e){
-                        print(e);
-                      }
-                      print(EventName.text);
-                      print(Organizer.text);
-                      print(EventDescription.text);
-                      print(_dateController.text);
-                      print(_timeController.text);
-                      print(_timeController1.text);
-                      print(_selectedValue);
+                    onPressed: () {
+                      // Show CircularProgressIndicator
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: Duration(seconds: 4),
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Booking an Auditorium...'),
+                              CircularProgressIndicator(),
+                            ],
+                          ),
+                        ),
+                      );
 
+                      // Delay the next steps by 4 seconds using Future.delayed and then
+                      Future.delayed(Duration(seconds: 2)).then((_) {
+                        // Hide the SnackBar
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                        // Verify that data is valid and add to Firestore
+                        try {
+                          FirebaseFirestore.instance.collection('requestedEvents').add({
+                            'eventName': EventName.text,
+                            'organizer': Organizer.text,
+                            'description': EventDescription.text,
+                            'date': _dateController.text,
+                            'startTime': _timeController.text,
+                            'endTime': _timeController1.text,
+                            'category': _selectedValue,
+                            'datetime_start': convertDateTime(_dateController.text, _timeController.text),
+                            'datetime_end': convertDateTime(_dateController.text, _timeController1.text),
+                            'requested_by': auth!.email,
+                            'requested_datetime': DateTime.now(),
+                          });
+
+                          // Navigate to the next page after 4 seconds
+                          // Future.delayed(Duration(seconds: 0)).then((_) {
+                            Navigator.pop(context);
+                          // });
+                        } catch (e) {
+                          print(e);
+                        }
+
+                        print(EventName.text);
+                        print(Organizer.text);
+                        print(EventDescription.text);
+                        print(_dateController.text);
+                        print(_timeController.text);
+                        print(_timeController1.text);
+                        print(_selectedValue);
+                      });
                     },
-                    child: Text('Book an Auditorium'),
                     minWidth: double.infinity,
                     height: 50.0,
+                    child: const Text('Book an Auditorium'),
                   ),
+
+                  // child: MaterialButton(
+                  //   onPressed: () async{
+                  //     ///////////////
+                  //     // verify that data is valid
+                  //     //////////////
+                  //     try{
+                  //       await FirebaseFirestore.instance.collection('requestedEvents').add({
+                  //         'eventName' : EventName.text,
+                  //         'organizer': Organizer.text,
+                  //         'description': EventDescription.text,
+                  //         'date': _dateController.text,
+                  //         'startTime': _timeController.text,
+                  //         'endTime': _timeController1.text,
+                  //         'category': _selectedValue,
+                  //         'datetime_start': convertDateTime(_dateController.text, _timeController.text),
+                  //         'datetime_end': convertDateTime(_dateController.text, _timeController1.text),
+                  //         'requested_by': auth!.email,
+                  //         'requested_datetime': DateTime.now(),
+                  //       });
+                  //       Navigator.pop(context);
+                  //     } catch(e){
+                  //       print(e);
+                  //     }
+                  //     print(EventName.text);
+                  //     print(Organizer.text);
+                  //     print(EventDescription.text);
+                  //     print(_dateController.text);
+                  //     print(_timeController.text);
+                  //     print(_timeController1.text);
+                  //     print(_selectedValue);
+                  //   },
+                  //   minWidth: double.infinity,
+                  //   height: 50.0,
+                  //   child: const Text('Book an Auditorium'),
+                  // ),
                 ),
               )
             ],
@@ -279,4 +343,33 @@ class _EventPageState extends State<EventPage> {
       });
     }
   }
+}
+
+
+DateTime convertDateTime(String date, String time){
+  print(date);
+  print(time);
+  int year = int.parse(date.substring(0, 4));
+  int month = int.parse(date.substring(5, 7));
+  int day = int.parse(date.substring(8, 10));
+  int hour ;
+  int minute;
+  if(time.length == 7 ){
+    if(time.substring(5, 7) == "AM"){
+      hour = int.parse(time.substring(0, 1));
+      minute = int.parse(time.substring(2, 4));
+    } else {
+      hour = int.parse(time.substring(0, 1)) + 12;
+      minute = int.parse(time.substring(2,4));
+    }
+  } else {
+    if(time.substring(6,8) == "AM"){
+      hour = int.parse(time.substring(0, 2));
+      minute = int.parse(time.substring(3, 5));
+    } else {
+      hour = int.parse(time.substring(0, 2)) + 12;
+      minute = int.parse(time.substring(3,5));
+    }
+  }
+  return DateTime(year, month, day, hour, minute);
 }

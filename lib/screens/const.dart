@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-Color buttonColor = Color.fromARGB(255, 115, 91, 241);
+Color buttonColor = const Color.fromARGB(255, 115, 91, 241);
 Color notselected = Colors.grey;
 Color selected = buttonColor;
-
+Color appBarColor = const Color(0xFFD9D9D9);
 // class button extends StatelessWidget {
 //   final text;
 //   final GestureDetector gesture;

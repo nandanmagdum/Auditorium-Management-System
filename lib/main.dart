@@ -1,10 +1,7 @@
-import 'package:audi/screens/homescreen.dart';
 import 'package:audi/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/login.dart';
 import 'firebase_options.dart';
 import 'package:audi/screens/homepage.dart';
 void main() async {
@@ -12,7 +9,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -29,9 +26,9 @@ class MyApp extends StatelessWidget {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot){
               if(snapshot.hasData){
-                return HomePage();
+                return const HomePage();
               } else {
-                return LoginScreen();
+                return const LoginScreen();
               }
             }
       ),

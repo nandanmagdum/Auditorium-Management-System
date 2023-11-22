@@ -1,7 +1,5 @@
-
 import 'package:audi/screens/homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Requests2 extends StatefulWidget {
@@ -17,12 +15,12 @@ class _RequestsState extends State<Requests2> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
-        title: Text(
+        title: const Text(
           'Pending Requests',
           style: TextStyle(color: Color(0xFF222B45)),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFFD9D9D9),
+        backgroundColor: const Color(0xFFD9D9D9),
         shape: ContinuousRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
       ),
@@ -39,7 +37,7 @@ class _RequestsState extends State<Requests2> {
                   child: Container(
                     height: 170,
                     width: 350,
-                    margin: EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20.0),
@@ -47,7 +45,7 @@ class _RequestsState extends State<Requests2> {
                           color: Colors.black26,
                           width: 2,
                         ),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                               color: Colors.black45,
                               spreadRadius: 0.1,
@@ -69,20 +67,20 @@ class _RequestsState extends State<Requests2> {
                                   color: getRandomColor(),
                                 ),
                               ),
-                              SizedBox(width: 8.0),
+                              const SizedBox(width: 8.0),
                               Row(
                                 children: [
                                   Text(
-                                    "${message.data()['startTime'].toString()}",
-                                    style: TextStyle(
+                                    message.data()['startTime'].toString(),
+                                    style: const TextStyle(
                                       fontSize: 12.0,
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  Text(" - "),
+                                  const Text(" - "),
                                   Text(
-                                    "${message.data()['endTime'].toString()}",
-                                    style: TextStyle(
+                                    message.data()['endTime'].toString(),
+                                    style: const TextStyle(
                                       fontSize: 12.0,
                                       color: Colors.grey,
                                     ),
@@ -91,22 +89,22 @@ class _RequestsState extends State<Requests2> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           Text(
-                            "${message.data()['eventName'].toString()}",
-                            style: TextStyle(
+                            message.data()['eventName'].toString(),
+                            style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           Text(
-                            "${message.data()['organizer'].toString()}",
-                            style: TextStyle(
+                            message.data()['organizer'].toString(),
+                            style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           // Text(
                           //   "${message.data()['description']}",
                           //   style: TextStyle(
@@ -122,10 +120,10 @@ class _RequestsState extends State<Requests2> {
                                     builder: (builder){
                                       return Scaffold(
                                         backgroundColor: Colors.white10,
-                                        appBar: AppBar(backgroundColor: Colors.white10,title: Text("Event Details"),centerTitle: true,),
+                                        appBar: AppBar(backgroundColor: Colors.white10,title: const Text("Event Details"),centerTitle: true,),
                                         body: Container(
                                           height: MediaQuery.of(context).size.height,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(50.0),
                                               topRight: Radius.circular(50.0),
@@ -139,25 +137,25 @@ class _RequestsState extends State<Requests2> {
                                                 // crossAxisAlignment: CrossAxisAlignment.center,
                                                 children:
                                                 [
-                                                  SizedBox(height: 20,),
-                                                  Text("Event: ${message.data()['eventName'].toString()}", style: TextStyle(fontSize: 30, color: Colors.grey, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
-                                                  SizedBox(height: 10,),
-                                                  Text("Organizer: ${message.data()['organizer']}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
-                                                  SizedBox(height: 10,),
-                                                  Text("Date: ${date_parse(message.data()['date'].toString())}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                  SizedBox(height: 10,),
+                                                  const SizedBox(height: 20,),
+                                                  Text("Event: ${message.data()['eventName'].toString()}", style: const TextStyle(fontSize: 30, color: Colors.grey, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
+                                                  const SizedBox(height: 10,),
+                                                  Text("Organizer: ${message.data()['organizer']}", style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
+                                                  const SizedBox(height: 10,),
+                                                  Text("Date: ${date_parse(message.data()['date'].toString())}", style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  const SizedBox(height: 10,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                      Text("${message.data()['startTime'].toString()}  to  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                      Text("${message.data()['endTime'].toString()}", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      const Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      Text("${message.data()['startTime'].toString()}  to  ", style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      Text(message.data()['endTime'].toString(), style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                     ],
                                                   ),
-                                                  SizedBox(height: 10,),
-                                                  Text("Event Desciption: ", style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                  SizedBox(height: 10,),
-                                                  Text("${message.data()['description'].toString()}", style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  const SizedBox(height: 10,),
+                                                  const Text("Event Desciption: ", style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  const SizedBox(height: 10,),
+                                                  Text(message.data()['description'].toString(), style: const TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                 ],
                                               ),
                                             ),
@@ -167,7 +165,7 @@ class _RequestsState extends State<Requests2> {
                                     }
                                 );
                               },
-                                  child: Text("View details")),
+                                  child: const Text("View details")),
                               ElevatedButton(onPressed: () async{
                                   try{
                                     print("Data is sending");
@@ -179,20 +177,25 @@ class _RequestsState extends State<Requests2> {
                                       'startTime': message.data()['startTime'],
                                       'endTime': message.data()['endTime'],
                                       'category': message.data()['category'],
+                                      'datetime_start': message.data()['datetime_start'],
+                                      'datetime_end': message.data()['datetime_end'],
+                                      'requested_by': message.data()['requested_by'],
+                                      'requested_datetime' : message.data()['requested_datetime'],
+                                      'accepted_time': DateTime.now()
                                     });
                                     print("data sent");
                                     await FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
                                   }catch(e){
                                     print(e);
                                   }
-                              }, child: Text("Accept",), style: ElevatedButton.styleFrom(primary: Colors.green),),
+                              }, style: ElevatedButton.styleFrom(backgroundColor: Colors.green), child: const Text("Accept",),),
                               ElevatedButton(onPressed: () async{
                                             try{
                                               await FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
                                             } catch(e){
                                               print(e);
                                             }
-                              }, child: Text("Reject"),style: ElevatedButton.styleFrom(primary: Colors.red),),
+                              },style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text("Reject"),),
                             ],
                           ),
 
@@ -207,7 +210,7 @@ class _RequestsState extends State<Requests2> {
                 children: newCard,
               );
             }
-            return Center(
+            return const Center(
               child: CircularProgressIndicator( backgroundColor: Colors.blueAccent,),
             );
           }

@@ -1,7 +1,6 @@
 import 'package:audi/backend/backend.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:test_api/backend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'edit.dart';
@@ -30,11 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
     TextEditingController data1 = TextEditingController();
     TextEditingController data2 = TextEditingController();
     TextEditingController data3 = TextEditingController();
-    FirebaseFirestore _fire = FirebaseFirestore.instance;
-    CollectionReference _collection = _fire.collection('sampleData');
+    FirebaseFirestore fire = FirebaseFirestore.instance;
+    CollectionReference collection = fire.collection('sampleData');
     void getDataStream() async {
       print("Getting all data");
-      await for (var snapShot in _fire.collection('sampleData').snapshots()) {
+      await for (var snapShot in fire.collection('sampleData').snapshots()) {
         for (var _doc in snapShot.docs) {
           print(_doc.data());
         }
@@ -49,11 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height*0.5,
                 width: MediaQuery.of(context).size.width,
                 child: StreamBuilder(
-                stream: _fire.collection('sampleData').snapshots(),
+                stream: fire.collection('sampleData').snapshots(),
                   builder: (context, snapshot){
                       if(snapshot.hasData){
                           final messages = snapshot.data!.docs;
@@ -65,17 +64,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(message.data()['name'].toString(), style: TextStyle(fontSize: 18),),
+                                    Text(message.data()['name'].toString(), style: const TextStyle(fontSize: 18),),
                                     Text(message.data()['roll no'].toString(), ),
                                     Text(message.data()['cgpa'].toString(),),
                                     GestureDetector(onTap: (){
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(message: message)));
                                       print(message.reference.id);
-                                      } ,child: Icon(Icons.edit)),
-                                    GestureDetector(child: Icon(Icons.delete), onTap: (){
+                                      } ,child: const Icon(Icons.edit)),
+                                    GestureDetector(child: const Icon(Icons.delete), onTap: (){
                                       print(message.reference.id);
                                       print("deleting data");
-                                      _fire.collection('sampleData').doc(message.reference.id).delete();
+                                      fire.collection('sampleData').doc(message.reference.id).delete();
                                       print("deleted finally");
                                     },),
                                   ],
@@ -87,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: card,
                           );
                       }
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator( backgroundColor: Colors.blueAccent,),
                       );
                   }
@@ -115,21 +114,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     print("data is sending");
                     try {
-                      await _fire
+                      await fire
                           .collection('sampleData')
                           .add({"name": data1.text, "roll no": data2.text, "cgpa": data3.text});
                       print("data sent");
                     } catch (e) {
                       print(e);
                     }
-                    print("${data1} ${data2} ${data3}");
+                    print("$data1 $data2 $data3");
                   },
-                  child: Text("Send/Create Data")),
+                  child: const Text("Send/Create Data")),
               ElevatedButton(
                 onPressed: () {
                   getDataStream();
                 },
-                child: Text("Get Data"),
+                child: const Text("Get Data"),
               ),
               Center(
                 child: ElevatedButton(

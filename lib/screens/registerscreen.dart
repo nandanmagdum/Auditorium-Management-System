@@ -5,7 +5,6 @@ import 'homepage.dart';
 import 'login.dart';
 import 'const.dart';
 import 'package:audi/backend/backend.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -51,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.email),
+          prefixIcon: const Icon(Icons.email),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
@@ -148,26 +147,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width,
             ),
-            Text("Create your account", style: TextStyle(fontSize: 20),),
-            SizedBox(width: 20,),
+            const Text("Create your account", style: TextStyle(fontSize: 20),),
+            const SizedBox(width: 20,),
             emailField,
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             passwordField,
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             confirmpasswordField,
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             DropdownButtonFormField(
               items: _role.map((e) {
                 return DropdownMenuItem(
+                    value: e,
                     child: Text(
                       e,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.black,
                       ),
-                    ),
-                    value: e);
+                    ));
               }).toList(),
               onChanged: (val) {
                 setState(() {
@@ -181,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               dropdownColor: Colors.white,
               decoration: kBoxDecoration.copyWith(hintText: 'Select your role'),
             ),
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             Material(
               elevation: 5,
               borderRadius: BorderRadius.circular(10),
@@ -190,7 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async {
-                    if(emailController != null && emailController.text.isNotEmpty){
+                    if(emailController.text.isNotEmpty){
                       try {
                         await FirebaseFirestore.instance.collection("users").doc(emailController.text).set({
                           "email" : emailController.text,
@@ -200,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           final user  = await auth
                               .registeruser(
                               emailController.text, passwordController.text);
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
                         //  else {
                         //   print("Auth is null");
                         //   showErrorSnackbar(context, "Auth is null");
@@ -224,7 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.bold),
                   )),
             ),
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
           ],
         ),
       ),
