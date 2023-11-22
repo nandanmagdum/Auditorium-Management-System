@@ -19,7 +19,7 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
         backgroundColor: appBarColor,
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('finalEvents').orderBy('date').snapshots(),
+        stream: FirebaseFirestore.instance.collection('finalEvents').orderBy('datetime_start').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             print('aasdadsad');

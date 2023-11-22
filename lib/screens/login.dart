@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:audi/screens/registerscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:audi/backend/backend.dart';
 import 'const.dart';
 import 'homepage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +15,70 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+
+  ////////////////
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    initializeNotifications();
+    startPeriodicCheck();
+  }
+
+  Future<void> initializeNotifications() async {
+    final AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+    InitializationSettings(
+        android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void showNotification(String eventTitle) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+        'your_channel_id', 'your_channel_name',
+        importance: Importance.max, priority: Priority.high, ticker: 'ticker');
+
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Event Today!',
+      'You have an event scheduled: $eventTitle',
+      platformChannelSpecifics,
+      payload: 'item x',
+    );
+  }
+
+  void startPeriodicCheck() {
+    // Adjust the duration based on your requirements
+    const Duration checkInterval = Duration(minutes: 15);
+
+    Timer.periodic(checkInterval, (Timer timer) {
+      checkForTodayEvents();
+    });
+  }
+
+  void checkForTodayEvents() {
+    // Replace this with your logic to check events scheduled for today
+    // For simplicity, we'll just assume there's an event today
+    bool hasEventToday = true;
+
+    if (hasEventToday) {
+      showNotification('Your Event Title');
+    }
+  }
+
+  ////////////////
+
+
   Auth auth = Auth();
   // form key
   final _formKey = GlobalKey<FormState>();

@@ -17,18 +17,18 @@ class _EventPageState extends State<EventPage> {
     String username = 'codinghero1234@gmail.com'; // Your email
     String password = 'rqdfitlbhzeyfbxb';
     final smtpServer = gmail(username, password);
-    // TODO : admins only
     List<String> emails = [
       'nandanmagdum@gmail.com',
       'atharvc2022@gmail.com',
       'pujachavan789@gmail.com',
       'sachitbhor1@gmail.com',
-      'nandanmagdum@gmail.com'
+      'nandanmagdum@gmail.com',
+      'omkargurav210@gmail.com'
     ];
     final message = Message()
       ..from = Address(username)
       ..recipients.addAll(emails)
-      ..subject = 'GCEK Auditorium App'
+      ..subject = 'GCEK Auditorium App Request'
       ..text = emailBody; // Body of the email
     try {
       final sendReport = await send(message, smtpServer);

@@ -32,55 +32,55 @@ print(eventName);
 }
 }
 
-EventList<Event> getEventDates() {
-  print("getEvents funtion called !!!!");
-
-  print("is this event a calling funtion!");
-  Map<String, int> map = {};
-  EventList<Event> eventDates = EventList<Event>(events: {});
-  // Replace this with your logic to fetch event data from Firestore or any other source
-  // For this example, I'm adding some dummy data
-  // Query<Map<String, dynamic>> query = FirebaseFirestouthmn re.instance.collectionGroup('fialEvents');
-  // QuerySnapshot<Map<String, dynamic>> snapshot =
-  eventDates.add(
-    DateTime(2023, 11, 4),
-    Event(
-      date: DateTime(2023, 11, 4),
-      icon: _getEventIcon(4),
-      dot: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 1.0),
-            color: Colors.yellow, // Color of the dot
-            width: 4.0,
-            height: 4.0,
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 1.0),
-            color: Colors.yellow, // Color of the dot
-            width: 4.0,
-            height: 4.0,
-          ),
-        ],
-      )
-    ),
-  );
-  eventDates.add(
-    DateTime(2023, 11, 4),
-    Event(
-      date: DateTime(2023, 11, 4),
-      icon: _getEventIcon(2),
-      dot: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 1.0),
-        color: Colors.yellow, // Color of the dot
-        width: 4.0,
-        height: 4.0,
-      ),
-    ),
-  );
-
-  return eventDates;
-}
+// EventList<Event> getEventDates() {
+//   print("getEvents funtion called !!!!");
+//   print("is this event a calling funtion!");
+//   Map<String, int> map = {};
+//   EventList<Event> eventDates = EventList<Event>(events: {});
+//   // Replace this with your logic to fetch event data from Firestore or any other source
+//   // For this example, I'm adding some dummy data
+//   // Query<Map<String, dynamic>> query = FirebaseFirestouthmn re.instance.collectionGroup('fialEvents');
+//   // QuerySnapshot<Map<String, dynamic>> snapshot =
+//   // for(var
+//   eventDates.add(
+//     DateTime(2023, 11, 4),
+//     Event(
+//       date: DateTime(2023, 11, 4),
+//       icon: _getEventIcon(4),
+//       dot: Row(
+//         children: [
+//           Container(
+//             margin: const EdgeInsets.symmetric(horizontal: 1.0),
+//             color: Colors.yellow, // Color of the dot
+//             width: 4.0,
+//             height: 4.0,
+//           ),
+//           Container(
+//             margin: const EdgeInsets.symmetric(horizontal: 1.0),
+//             color: Colors.yellow, // Color of the dot
+//             width: 4.0,
+//             height: 4.0,
+//           ),
+//         ],
+//       )
+//     ),
+//   );
+//   eventDates.add(
+//     DateTime(2023, 11, 4),
+//     Event(
+//       date: DateTime(2023, 11, 4),
+//       icon: _getEventIcon(2),
+//       dot: Container(
+//         margin: const EdgeInsets.symmetric(horizontal: 1.0),
+//         color: Colors.yellow, // Color of the dot
+//         width: 4.0,
+//         height: 4.0,
+//       ),
+//     ),
+//   );
+//
+//   return eventDates;
+// }
 
 // Define a function to return an icon based on the event count
 Widget _getEventIcon(int eventCount) {
@@ -121,6 +121,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<String> EventDatesAll = [];
   var role;
   var _userRole ;
   var _user_email;
@@ -141,6 +142,8 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   void initState() {
+    fetchData();
+    getEventDates();
     super.initState();
 
     // Start loading data
@@ -685,6 +688,100 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
+  }
+
+  Future<void> fetchData() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('finalEvents') // Replace with your collection name
+          .get();
+
+      List<String> strings = querySnapshot.docs
+          .map((doc) => doc.get('date') as String) // Replace with your field name
+          .toList();
+
+      setState(() {
+        EventDatesAll = strings;
+      });
+      print(EventDatesAll);
+    } catch (e) {
+      print('nandans error : Error fetching data: $e');
+    }
+  }
+  // imp function
+  EventList<Event> getEventDates() {
+    print("is getEvenet date function is acalsasdjf hasuiodfg oaisdugf ouiasgd f");
+    print(EventDatesAll);
+    EventList<Event> eventDates = EventList<Event>(events: {});
+    //finally done
+    for(var message in EventDatesAll)
+    {
+      print("${message} and  --om nama shivaya");
+      int year = int.parse(message.substring(0,4));
+      int month = int.parse(message.substring(5,7));
+      int day = int.parse(message.substring(8,10));
+      eventDates.add(DateTime(year,month,day), Event(
+          date: DateTime(year, month, day),
+          icon: _getEventIcon(4),
+          dot: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1.0),
+                color: Colors.greenAccent, // Color of the dot
+                width: 4.0,
+                height: 4.0,
+              ),
+            ],
+          )
+      ),);
+    }
+    // eventDates.add(
+    //   DateTime(2023, 11, 4),
+    //   Event(
+    //       date: DateTime(2023, 11, 4),
+    //       icon: _getEventIcon(4),
+    //       dot: Row(
+    //         children: [
+    //           Container(
+    //             margin: const EdgeInsets.symmetric(horizontal: 1.0),
+    //             color: Colors.yellow, // Color of the dot
+    //             width: 4.0,
+    //             height: 4.0,
+    //           ),
+    //           Container(
+    //             margin: const EdgeInsets.symmetric(horizontal: 1.0),
+    //             color: Colors.yellow, // Color of the dot
+    //             width: 4.0,
+    //             height: 4.0,
+    //           ),
+    //         ],
+    //       )
+    //   ),
+    // );
+    // eventDates.add(
+    //   DateTime(2023, 11, 29),
+    //   Event(
+    //       date: DateTime(2023, 11, 29),
+    //       icon: _getEventIcon(4),
+    //       dot: Row(
+    //         children: [
+    //           Container(
+    //             margin: const EdgeInsets.symmetric(horizontal: 1.0),
+    //             color: Colors.yellow, // Color of the dot
+    //             width: 4.0,
+    //             height: 4.0,
+    //           ),
+    //           Container(
+    //             margin: const EdgeInsets.symmetric(horizontal: 1.0),
+    //             color: Colors.green, // Color of the dot
+    //             width: 4.0,
+    //             height: 4.0,
+    //           ),
+    //         ],
+    //       )
+    //   ),
+    // );
+    return eventDates;
   }
 }
 
