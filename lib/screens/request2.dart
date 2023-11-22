@@ -120,7 +120,7 @@ class _RequestsState extends State<Requests2> {
                                     builder: (builder){
                                       return Scaffold(
                                         backgroundColor: Colors.white10,
-                                        appBar: AppBar(backgroundColor: Colors.white10,title: const Text("Event Details"),centerTitle: true,),
+                                        appBar: AppBar(backgroundColor: Color(0xFFD9D9D9),title: const Text("Event Details", style: TextStyle(color: Colors.black)),centerTitle: true,),
                                         body: Container(
                                           height: MediaQuery.of(context).size.height,
                                           decoration: const BoxDecoration(
@@ -135,28 +135,40 @@ class _RequestsState extends State<Requests2> {
                                               child: Column(
                                                 // mainAxisAlignment: MainAxisAlignment.center,
                                                 // crossAxisAlignment: CrossAxisAlignment.center,
-                                                children:
-                                                [
-                                                  const SizedBox(height: 20,),
-                                                  Text("Event: ${message.data()['eventName'].toString()}", style: const TextStyle(fontSize: 30, color: Colors.grey, fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
+                                                children: [
                                                   const SizedBox(height: 10,),
-                                                  Text("Organizer: ${message.data()['organizer']}", style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
+                                                  Text("Event: ${message.data()['eventName'].toString()}", style: const TextStyle(fontSize: 30, color: Colors.black, fontWeight: FontWeight.w700), textAlign: TextAlign.left,),
                                                   const SizedBox(height: 10,),
-                                                  Text("Date: ${date_parse(message.data()['date'].toString())}", style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  Text("Organizer: ${message.data()['organizer']}", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
+                                                  const SizedBox(height: 10,),
+                                                  Text("Date: ${date_parse(message.data()['date'].toString())}", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                   const SizedBox(height: 10,),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      const Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                      Text("${message.data()['startTime'].toString()}  to  ", style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                      Text(message.data()['endTime'].toString(), style: const TextStyle(fontSize: 26, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      const Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      Text("${message.data()['startTime'].toString()}  to  ", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      Text(message.data()['endTime'].toString(), style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                     ],
                                                   ),
                                                   const SizedBox(height: 10,),
-                                                  const Text("Event Desciption: ", style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  const Text("Event Description: ", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                   const SizedBox(height: 10,),
-                                                  Text(message.data()['description'].toString(), style: const TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  Container(
+                                                    padding: const EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.grey),
+                                                      borderRadius: BorderRadius.circular(5),
+                                                    ),
+                                                    child: Text(message.data()['description'].toString(), style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                  ),
+                                                  const SizedBox(height: 10,),
+                                                  ElevatedButton(
+                                                    child: const Text("Register for Event"),
+                                                    onPressed: () {},
+                                                  ),
                                                 ],
+
                                               ),
                                             ),
                                           ),
