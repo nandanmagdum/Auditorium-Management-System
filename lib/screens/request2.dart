@@ -1,6 +1,8 @@
 import 'package:audi/screens/homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class Requests2 extends StatefulWidget {
   const Requests2({super.key});
@@ -10,6 +12,24 @@ class Requests2 extends StatefulWidget {
 }
 
 class _RequestsState extends State<Requests2> {
+  // function to send email to the requester only
+  void sendEmail(String emailBody, String requester) async {
+    String username = 'codinghero1234@gmail.com'; // Your email
+    String password = 'rqdfitlbhzeyfbxb';
+    final smtpServer = gmail(username, password);
+    // TODO : admins only
+    final message = Message()
+      ..from = Address(username)
+      ..recipients.add(requester)
+      ..subject = 'GCEK Auditorium App Rejected your slot request !'
+      ..text = emailBody; // Body of the email
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +45,7 @@ class _RequestsState extends State<Requests2> {
             borderRadius: BorderRadius.circular(20)),
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('requestedEvents').snapshots(),
+          stream: FirebaseFirestore.instance.collection('requestedEvents').orderBy('requested_datetime', descending: false).snapshots(),
           builder: (context, snapshot){
             if(snapshot.hasData){
               final messages = snapshot.data!.docs;
@@ -204,6 +224,7 @@ class _RequestsState extends State<Requests2> {
                               ElevatedButton(onPressed: () async{
                                             try{
                                               await FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
+
                                             } catch(e){
                                               print(e);
                                             }

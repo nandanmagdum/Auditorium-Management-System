@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'Constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:mailer/smtp_server.dart';
+import 'package:mailer/mailer.dart';
 class EventPage extends StatefulWidget {
   const EventPage({super.key});
 
@@ -11,6 +12,31 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
+  // function to send email
+  void sendEmail(String emailBody) async {
+    String username = 'codinghero1234@gmail.com'; // Your email
+    String password = 'rqdfitlbhzeyfbxb';
+    final smtpServer = gmail(username, password);
+    // TODO : admins only
+    List<String> emails = [
+      'nandanmagdum@gmail.com',
+      'atharvc2022@gmail.com',
+      'pujachavan789@gmail.com',
+      'sachitbhor1@gmail.com',
+      'nandanmagdum@gmail.com'
+    ];
+    final message = Message()
+      ..from = Address(username)
+      ..recipients.addAll(emails)
+      ..subject = 'GCEK Auditorium App'
+      ..text = emailBody; // Body of the email
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _timeController1 = TextEditingController();
@@ -244,7 +270,17 @@ class _EventPageState extends State<EventPage> {
                             'requested_by': auth!.email,
                             'requested_datetime': DateTime.now(),
                           });
+                          String emailBody = "${auth!.email} is requesting to access Auditorium Slot\nEvent Details are: \n"
+                              "Event Name: ${EventName.text}\n"
+                              "Organizer : ${Organizer.text}\n"
+                              "Event Description : ${EventDescription.text}\n"
+                              "Date of request : ${_dateController.text}\n"
+                              "Start Time : ${_timeController.text}\n"
+                              "End Time: ${_timeController1.text}\n"
+                              "To Accept/Reject the slot request from the App\n"
+                              "Go to GCEK Auditorium App -> Auditorium Requestes\n";
 
+                          sendEmail(emailBody);
                           // Navigate to the next page after 4 seconds
                           // Future.delayed(Duration(seconds: 0)).then((_) {
                             Navigator.pop(context);
