@@ -22,7 +22,7 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
         stream: FirebaseFirestore.instance.collection('finalEvents').orderBy('datetime_start').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            print('aasdadsad');
+            // print('aasdadsad');
             return const Text("No data");
           }
           final messages = snapshot.data!.docs;
@@ -181,7 +181,7 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
                                         }
                                     );
                                   }
-                                  ,child: const Text("...View More")),
+                                  ,child: const Text("View More")),
                             ],
                           ),
                         ],

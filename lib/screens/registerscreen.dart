@@ -195,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           "email" : emailController.text,
                           "role" : _selectedValue
                         });
-                        print("Database updated");
+                        // print("Database updated");
                           final user  = await auth
                               .registeruser(
                               emailController.text, passwordController.text);
@@ -206,12 +206,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // }
                       } catch (e) {
 // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
-                        print(e);
+//                         print(e);
                         showErrorSnackbar(context, e.toString());
                       }
                     }
                     else {
-                      print("Null check error");
+                      // print("Null check error");
                     }
                   },
                   child: const Text(

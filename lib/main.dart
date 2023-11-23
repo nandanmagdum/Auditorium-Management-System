@@ -8,17 +8,18 @@ import 'firebase_options.dart';
 import 'package:audi/screens/homepage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
  // import 'package:android_alarm_manager/android_alarm_manager.dart';
- void printDateTime()
- {
-   DateTime  date = DateTime.now();
-   print("background running .... : ${date}");
- }
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+
+  //background tasks
+
+  //background tasks
 }
 
 class MyApp extends StatelessWidget {
@@ -44,3 +45,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+

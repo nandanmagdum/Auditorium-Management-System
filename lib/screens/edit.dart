@@ -49,9 +49,9 @@ class _EditScreenState extends State<EditScreen> {
                 'cgpa': data3.text
               });
               Navigator.pop(context);
-              print("$data1 $data2 $data3");
+              // print("$data1 $data2 $data3");
             } catch(e){
-              print(e);
+              // print(e);
             }
           }, child: const Text("Edit data"),),
           ElevatedButton(onPressed: (){

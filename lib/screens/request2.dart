@@ -32,16 +32,16 @@ class _RequestsState extends State<Requests2> {
       ..text = emailBody; // Body of the email
     try {
       final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
+      // print('Message sent: ' + sendReport.toString());
     } catch (e) {
-      print('Error occurred: $e');
+      // print('Error occurred: $e');
     }
   }
   void sendEmail_TO_ALL(String emailBody, List<String> audience) async {
     String username = 'codinghero1234@gmail.com'; // Your email
     String password = 'rqdfitlbhzeyfbxb';
     final smtpServer = gmail(username, password);
-    // TODO : admins only
+
     final message = Message()
       ..from = Address(username)
       ..recipients.addAll(audience)
@@ -49,9 +49,9 @@ class _RequestsState extends State<Requests2> {
       ..text = emailBody; // Body of the email
     try {
       final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
+      // print('Message sent: ' + sendReport.toString());
     } catch (e) {
-      print('Error occurred: $e');
+      // print('Error occurred: $e');
     }
   }
   @override
@@ -206,13 +206,7 @@ class _RequestsState extends State<Requests2> {
                                                     ),
                                                     child: Text(message.data()['description'].toString(), style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                   ),
-                                                  const SizedBox(height: 10,),
-                                                  ElevatedButton(
-                                                    child: const Text("Register for Event"),
-                                                    onPressed: () {},
-                                                  ),
                                                 ],
-
                                               ),
                                             ),
                                           ),
@@ -224,7 +218,7 @@ class _RequestsState extends State<Requests2> {
                                   child: const Text("View details")),
                               ElevatedButton(onPressed: () async{
                                   try{
-                                    print("Data is sending");
+                                    // print("Data is sending");
                                     await FirebaseFirestore.instance.collection('finalEvents').add({
                                       'eventName': message.data()['eventName'],
                                       'organizer' :message.data()['organizer'],
@@ -239,7 +233,7 @@ class _RequestsState extends State<Requests2> {
                                       'requested_datetime' : message.data()['requested_datetime'],
                                       'accepted_time': DateTime.now()
                                     });
-                                    print("data sent");
+                                    // print("data sent");
                                     List<String> audience = GLOBAL_AUDIENCE;
                                     String emailBody = "Upcoming NEW EVENT AT GCEK AUDITORIUM !\n\n"
                                         "Event : ${message.data()['eventName']}\n"
@@ -250,7 +244,7 @@ class _RequestsState extends State<Requests2> {
                                     sendEmail_TO_ALL(emailBody, audience);
                                     await FirebaseFirestore.instance.collection('requestedEvents').doc(message.reference.id).delete();
                                   }catch(e){
-                                    print(e);
+                                    // print(e);
                                   }
                               }, style: ElevatedButton.styleFrom(backgroundColor: Colors.green), child: const Text("Accept",),),
                               ElevatedButton(onPressed: () async{
@@ -266,7 +260,7 @@ class _RequestsState extends State<Requests2> {
                                                   "You can re-request your slot from the App\n\n";
                                               sendEmail(emailBody, message.data()['requested_by']);
                                             } catch(e){
-                                              print(e);
+                                              // print(e);
                                             }
                               },style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text("Reject"),),
                             ],
@@ -306,7 +300,7 @@ class _RequestsState extends State<Requests2> {
         GLOBAL_AUDIENCE = strings;
       });
     } catch (e) {
-      print('Error fetching data: $e');
+      // print('Error fetching data: $e');
     }
   }
 }

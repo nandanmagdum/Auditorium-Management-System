@@ -187,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     .then((value) => const HomePage());
               } catch (e) {
                 showErrorSnackbar(context, e.toString());
-                print(e);
+                // print(e);
               }
             },
             child: const Text(
@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   .then((value) => const HomePage());
             } catch (e) {
               showErrorSnackbar(context, e.toString());
-              print(e);
+              // print(e);
             }
           },
           child: const Text(
@@ -366,7 +366,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               .then((value) => const HomePage());
                         } catch (e) {
                           // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
-                          print(e);
+                          // print(e);
                           showErrorSnackbar(context, e.toString());
                         }
                       },

@@ -28,7 +28,7 @@ class _FinalSlotsState extends State<FinalSlots> {
         stream: FirebaseFirestore.instance.collection('finalEvents').orderBy('datetime_start').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            print('aasdadsad');
+            // print('aasdadsad');
             return const Text("No data");   
           }
           final messages = snapshot.data!.docs;
@@ -159,7 +159,7 @@ class _FinalSlotsState extends State<FinalSlots> {
                                                     // crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
                                                       const SizedBox(height: 10,),
-                                                      Text("Event: ${message.data()['eventName'].toString()}", style: const TextStyle(fontSize: 30, color: Colors.black, fontWeight: FontWeight.w700), textAlign: TextAlign.left,),
+                                                      Text("Event: ${message.data()['eventName'].toString()}", style: const TextStyle(fontSize: 30, color: Colors.black, fontWeight: FontWeight.w700), textAlign: TextAlign.center,),
                                                       const SizedBox(height: 10,),
                                                       Text("Organizer: ${message.data()['organizer']}", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
                                                       const SizedBox(height: 10,),
@@ -184,11 +184,7 @@ class _FinalSlotsState extends State<FinalSlots> {
                                                         ),
                                                         child: Text(message.data()['description'].toString(), style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
                                                       ),
-                                                      const SizedBox(height: 10,),
-                                                      ElevatedButton(
-                                                        child: const Text("Register for Event"),
-                                                        onPressed: () {},
-                                                      ),
+
                                                     ],
 
                                                   ),
@@ -199,7 +195,7 @@ class _FinalSlotsState extends State<FinalSlots> {
                                         }
                                     );
                                   }
-                                  ,child: const Text("...View More")),
+                                  ,child: const Text("View More")),
                             ],
                           ),
                         ],

@@ -286,16 +286,16 @@ class _EventPageState extends State<EventPage> {
                             Navigator.pop(context);
                           // });
                         } catch (e) {
-                          print(e);
+                          // print(e);
                         }
 
-                        print(EventName.text);
-                        print(Organizer.text);
-                        print(EventDescription.text);
-                        print(_dateController.text);
-                        print(_timeController.text);
-                        print(_timeController1.text);
-                        print(_selectedValue);
+                        // print(EventName.text);
+                        // print(Organizer.text);
+                        // print(EventDescription.text);
+                        // print(_dateController.text);
+                        // print(_timeController.text);
+                        // print(_timeController1.text);
+                        // print(_selectedValue);
                       });
                     },
                     minWidth: double.infinity,
@@ -383,8 +383,8 @@ class _EventPageState extends State<EventPage> {
 
 
 DateTime convertDateTime(String date, String time){
-  print(date);
-  print(time);
+  // print(date);
+  // print(time);
   int year = int.parse(date.substring(0, 4));
   int month = int.parse(date.substring(5, 7));
   int day = int.parse(date.substring(8, 10));

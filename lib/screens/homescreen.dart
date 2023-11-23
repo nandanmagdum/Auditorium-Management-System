@@ -17,12 +17,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('init called');
+    // print('init called');
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Build method called");
+    // print("Build method called");
     Auth auth = Auth();
     User? user = FirebaseAuth.instance.currentUser;
     String? usser = user?.email;
@@ -30,12 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
     TextEditingController data2 = TextEditingController();
     TextEditingController data3 = TextEditingController();
     FirebaseFirestore fire = FirebaseFirestore.instance;
-    CollectionReference collection = fire.collection('sampleData');
+    CollectionReference collection = fire.collection('sampleData  ');
     void getDataStream() async {
-      print("Getting all data");
+      // print("Getting all data");
       await for (var snapShot in fire.collection('sampleData').snapshots()) {
         for (var _doc in snapShot.docs) {
-          print(_doc.data());
+          // print(_doc.data());
         }
       }
     }
@@ -69,13 +69,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Text(message.data()['cgpa'].toString(),),
                                     GestureDetector(onTap: (){
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(message: message)));
-                                      print(message.reference.id);
+                                      // print(message.reference.id);
                                       } ,child: const Icon(Icons.edit)),
                                     GestureDetector(child: const Icon(Icons.delete), onTap: (){
-                                      print(message.reference.id);
-                                      print("deleting data");
+                                      // print(message.reference.id);
+                                      // print("deleting data");
                                       fire.collection('sampleData').doc(message.reference.id).delete();
-                                      print("deleted finally");
+                                      // print("deleted finally");
                                     },),
                                   ],
                                 ),
@@ -112,16 +112,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    print("data is sending");
+                    // print("data is sending");
                     try {
                       await fire
                           .collection('sampleData')
                           .add({"name": data1.text, "roll no": data2.text, "cgpa": data3.text});
-                      print("data sent");
+                      // print("data sent");
                     } catch (e) {
-                      print(e);
+                      // print(e);
                     }
-                    print("$data1 $data2 $data3");
+                    // print("$data1 $data2 $data3");
                   },
                   child: const Text("Send/Create Data")),
               ElevatedButton(
