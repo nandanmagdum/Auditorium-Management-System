@@ -3,4 +3,4 @@
 3. Request for booking a slot ✅
 4. Pending Request Page ✅
 5. Details Page ✅
-6. 
+6. Clashing of events ✅✅✅ 
