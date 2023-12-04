@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:mailer/mailer.dart';
+import 'package:audi/backend/clash.dart';
+
 class EventPage extends StatefulWidget {
   const EventPage({super.key});
 
@@ -12,6 +14,87 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
+  List<Timestamp> global_events_start = [];
+  List<Timestamp> global_events_end = [];
+  Future<void> fillGlobalEvents() async {
+    print("fill global events called ");
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('finalEvents') // Replace with your collection name
+          .get();
+      print("1");
+      List<Timestamp> strings_start = querySnapshot.docs
+          .map((doc) => doc.get('datetime_start')
+              as Timestamp) // Replace with your field name
+          .toList();
+      print("2");
+      List<Timestamp> strings_end = querySnapshot.docs
+          .map((doc) => doc.get('datetime_end') as Timestamp)
+          .toList();
+      print("3");
+      // global_events_start = querySnapshot.docs
+      //     .map((doc) => doc.get('datetime_start').toDate()) // Convert Timestamp to DateTime
+      //     .toList();
+      // global_events_end = querySnapshot.docs
+      //     .map((doc) => doc.get('datetime_end').toDate()) // Convert Timestamp to DateTime
+      //     .toList();
+      // setState(() {
+      global_events_start = strings_start;
+      global_events_end = strings_end;
+      // });
+      print("Printing datetime lists");
+      print(global_events_start);
+      print(global_events_end);
+      print("Fill data funtion completed succesfully !! :-)");
+      print(global_events_start.length);
+      print(global_events_end.length);
+    } catch (e) {
+      print("Serious error : ");
+      print('Error fetching data: $e');
+    }
+  }
+
+  bool isSlotAvailable(List<Timestamp> starting, List<Timestamp> ending,
+      Timestamp s, Timestamp e) {
+    print("isSlotAvailable funtion called");
+    int n = starting.length;
+    int m = ending.length;
+    print(n);
+    print(m);
+    for (var i = 0; i < n; i++) {
+      print("${starting[i]}  - ${ending[i]}  -- ${s} - ${e}");
+      int c1 = starting[i].compareTo(s);
+      int c2 = starting[i].compareTo(e);
+      int c3 = ending[i].compareTo(s);
+      int c4 = ending[i].compareTo(e);
+      if(c2 == 0 || c3 == 0) return true;
+      if ((c1 >= 0 && c1 <= 0) || (c4 >= 0 && c4 <= 0)) {
+        // If the start or end time of the current event is equal to the start or end time of any existing event
+        return false;
+      } else if ((c1 <= 0 && c4 >= 0) || (c1 >= 0 && c4 <= 0)) {
+        // If the current event completely overlaps with an existing event or vice versa
+        return false;
+      } else if ((c1 >= 0 && c3 <= 0) || (c2 >= 0 && c4 <= 0)) {
+        // If the start time of the current event is between the start and end time of an existing event
+        return false;
+      } else if ((c1 <= 0 && c3 >= 0) || (c2 <= 0 && c4 >= 0)) {
+        // If the end time of the current event is between the start and end time of an existing event
+        return false;
+      }
+    }
+    print("returning true");
+    return true;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("init state called");
+    // TODO: get all event data here as List of objects
+    fillGlobalEvents();
+  }
+
   // function to send email
   void sendEmail(String emailBody) async {
     String username = 'codinghero1234@gmail.com'; // Your email
@@ -37,6 +120,7 @@ class _EventPageState extends State<EventPage> {
       print('Error occurred: $e');
     }
   }
+
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _timeController1 = TextEditingController();
@@ -101,9 +185,9 @@ class _EventPageState extends State<EventPage> {
                 height: 20.0,
               ),
               TextField(
-                controller: Organizer,
+                  controller: Organizer,
                   onChanged: (value) {
-                  Organizer.text = value;
+                    Organizer.text = value;
                   },
                   style: const TextStyle(color: Colors.black),
                   decoration: kBoxDecoration.copyWith(hintText: 'Organizer')),
@@ -228,117 +312,162 @@ class _EventPageState extends State<EventPage> {
               const SizedBox(
                 height: 90.0,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Material(
-                  color: Colors.indigoAccent,
-                  borderRadius: BorderRadius.circular(30.0),
-                  elevation: 5.0,
-                  child: MaterialButton(
-                    onPressed: () {
-                      // Show CircularProgressIndicator
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: Duration(seconds: 4),
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Booking an Auditorium...'),
-                              CircularProgressIndicator(),
-                            ],
+              FutureBuilder(
+                future: fillGlobalEvents(),
+                builder: (context, snapshot) => (snapshot.connectionState ==
+                        ConnectionState.waiting)
+                    ? CircularProgressIndicator()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Material(
+                          color: Colors.indigoAccent,
+                          borderRadius: BorderRadius.circular(30.0),
+                          elevation: 5.0,
+                          child: MaterialButton(
+                            onPressed: () {
+                              // Show CircularProgressIndicator
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: Duration(seconds: 4),
+                                  content: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Booking an Auditorium...'),
+                                      CircularProgressIndicator(),
+                                    ],
+                                  ),
+                                ),
+                              );
+
+                              // Delay the next steps by 4 seconds using Future.delayed and then
+                              Future.delayed(Duration(seconds: 2)).then((_) {
+                                // Hide the SnackBar
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                // Verify that data is valid and add to Firestore
+                                final starting = global_events_start;
+                                final endingg = global_events_end;
+                                DateTime event_start = convertDateTime(
+                                    _dateController.text, _timeController.text);
+                                DateTime event_end = convertDateTime(
+                                    _dateController.text,
+                                    _timeController1.text);
+                                if (!isSlotAvailable(
+                                    starting,
+                                    endingg,
+                                    Timestamp.fromDate(event_start),
+                                    Timestamp.fromDate(event_end))) {
+                                  print(
+                                      "Events are clashing red alaert !!!!!!!!!!!!!!!");
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Event Clash Detected'),
+                                      content: Text(
+                                          'The requested event clashes with an existing booking. Please choose different event timings and check the calendar again for already booked events.'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  try {
+                                    FirebaseFirestore.instance
+                                        .collection('requestedEvents')
+                                        .add({
+                                      'eventName': EventName.text,
+                                      'organizer': Organizer.text,
+                                      'description': EventDescription.text,
+                                      'date': _dateController.text,
+                                      'startTime': _timeController.text,
+                                      'endTime': _timeController1.text,
+                                      'category': _selectedValue,
+                                      'datetime_start': convertDateTime(
+                                          _dateController.text,
+                                          _timeController.text),
+                                      'datetime_end': convertDateTime(
+                                          _dateController.text,
+                                          _timeController1.text),
+                                      'requested_by': auth!.email,
+                                      'requested_datetime': DateTime.now(),
+                                    });
+                                    String emailBody =
+                                        "${auth!.email} is requesting to access Auditorium Slot\nEvent Details are: \n"
+                                        "Event Name: ${EventName.text}\n"
+                                        "Organizer : ${Organizer.text}\n"
+                                        "Event Description : ${EventDescription.text}\n"
+                                        "Date of request : ${_dateController.text}\n"
+                                        "Start Time : ${_timeController.text}\n"
+                                        "End Time: ${_timeController1.text}\n"
+                                        "To Accept/Reject the slot request from the App\n"
+                                        "Go to GCEK Auditorium App -> Auditorium Requestes\n";
+
+                                    sendEmail(emailBody);
+                                    // Navigate to the next page after 4 seconds
+                                    // Future.delayed(Duration(seconds: 0)).then((_) {
+                                    Navigator.pop(context);
+                                    // });
+                                  } catch (e) {
+                                    // print(e);
+                                  }
+                                }
+
+                                // print(EventName.text);
+                                // print(Organizer.text);
+                                // print(EventDescription.text);
+                                // print(_dateController.text);
+                                // print(_timeController.text);
+                                // print(_timeController1.text);
+                                // print(_selectedValue);
+                              });
+                            },
+                            minWidth: double.infinity,
+                            height: 50.0,
+                            child: const Text('Book an Auditorium'),
                           ),
+
+                          // child: MaterialButton(
+                          //   onPressed: () async{
+                          //     ///////////////
+                          //     // verify that data is valid
+                          //     //////////////
+                          //     try{
+                          //       await FirebaseFirestore.instance.collection('requestedEvents').add({
+                          //         'eventName' : EventName.text,
+                          //         'organizer': Organizer.text,
+                          //         'description': EventDescription.text,
+                          //         'date': _dateController.text,
+                          //         'startTime': _timeController.text,
+                          //         'endTime': _timeController1.text,
+                          //         'category': _selectedValue,
+                          //         'datetime_start': convertDateTime(_dateController.text, _timeController.text),
+                          //         'datetime_end': convertDateTime(_dateController.text, _timeController1.text),
+                          //         'requested_by': auth!.email,
+                          //         'requested_datetime': DateTime.now(),
+                          //       });
+                          //       Navigator.pop(context);
+                          //     } catch(e){
+                          //       print(e);
+                          //     }
+                          //     print(EventName.text);
+                          //     print(Organizer.text);
+                          //     print(EventDescription.text);
+                          //     print(_dateController.text);
+                          //     print(_timeController.text);
+                          //     print(_timeController1.text);
+                          //     print(_selectedValue);
+                          //   },
+                          //   minWidth: double.infinity,
+                          //   height: 50.0,
+                          //   child: const Text('Book an Auditorium'),
+                          // ),
                         ),
-                      );
-
-                      // Delay the next steps by 4 seconds using Future.delayed and then
-                      Future.delayed(Duration(seconds: 2)).then((_) {
-                        // Hide the SnackBar
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-                        // Verify that data is valid and add to Firestore
-                        try {
-                          FirebaseFirestore.instance.collection('requestedEvents').add({
-                            'eventName': EventName.text,
-                            'organizer': Organizer.text,
-                            'description': EventDescription.text,
-                            'date': _dateController.text,
-                            'startTime': _timeController.text,
-                            'endTime': _timeController1.text,
-                            'category': _selectedValue,
-                            'datetime_start': convertDateTime(_dateController.text, _timeController.text),
-                            'datetime_end': convertDateTime(_dateController.text, _timeController1.text),
-                            'requested_by': auth!.email,
-                            'requested_datetime': DateTime.now(),
-                          });
-                          String emailBody = "${auth!.email} is requesting to access Auditorium Slot\nEvent Details are: \n"
-                              "Event Name: ${EventName.text}\n"
-                              "Organizer : ${Organizer.text}\n"
-                              "Event Description : ${EventDescription.text}\n"
-                              "Date of request : ${_dateController.text}\n"
-                              "Start Time : ${_timeController.text}\n"
-                              "End Time: ${_timeController1.text}\n"
-                              "To Accept/Reject the slot request from the App\n"
-                              "Go to GCEK Auditorium App -> Auditorium Requestes\n";
-
-                          sendEmail(emailBody);
-                          // Navigate to the next page after 4 seconds
-                          // Future.delayed(Duration(seconds: 0)).then((_) {
-                            Navigator.pop(context);
-                          // });
-                        } catch (e) {
-                          // print(e);
-                        }
-
-                        // print(EventName.text);
-                        // print(Organizer.text);
-                        // print(EventDescription.text);
-                        // print(_dateController.text);
-                        // print(_timeController.text);
-                        // print(_timeController1.text);
-                        // print(_selectedValue);
-                      });
-                    },
-                    minWidth: double.infinity,
-                    height: 50.0,
-                    child: const Text('Book an Auditorium'),
-                  ),
-
-                  // child: MaterialButton(
-                  //   onPressed: () async{
-                  //     ///////////////
-                  //     // verify that data is valid
-                  //     //////////////
-                  //     try{
-                  //       await FirebaseFirestore.instance.collection('requestedEvents').add({
-                  //         'eventName' : EventName.text,
-                  //         'organizer': Organizer.text,
-                  //         'description': EventDescription.text,
-                  //         'date': _dateController.text,
-                  //         'startTime': _timeController.text,
-                  //         'endTime': _timeController1.text,
-                  //         'category': _selectedValue,
-                  //         'datetime_start': convertDateTime(_dateController.text, _timeController.text),
-                  //         'datetime_end': convertDateTime(_dateController.text, _timeController1.text),
-                  //         'requested_by': auth!.email,
-                  //         'requested_datetime': DateTime.now(),
-                  //       });
-                  //       Navigator.pop(context);
-                  //     } catch(e){
-                  //       print(e);
-                  //     }
-                  //     print(EventName.text);
-                  //     print(Organizer.text);
-                  //     print(EventDescription.text);
-                  //     print(_dateController.text);
-                  //     print(_timeController.text);
-                  //     print(_timeController1.text);
-                  //     print(_selectedValue);
-                  //   },
-                  //   minWidth: double.infinity,
-                  //   height: 50.0,
-                  //   child: const Text('Book an Auditorium'),
-                  // ),
-                ),
+                      ),
               )
             ],
           ),
@@ -381,30 +510,29 @@ class _EventPageState extends State<EventPage> {
   }
 }
 
-
-DateTime convertDateTime(String date, String time){
+DateTime convertDateTime(String date, String time) {
   // print(date);
   // print(time);
   int year = int.parse(date.substring(0, 4));
   int month = int.parse(date.substring(5, 7));
   int day = int.parse(date.substring(8, 10));
-  int hour ;
+  int hour;
   int minute;
-  if(time.length == 7 ){
-    if(time.substring(5, 7) == "AM"){
+  if (time.length == 7) {
+    if (time.substring(5, 7) == "AM") {
       hour = int.parse(time.substring(0, 1));
       minute = int.parse(time.substring(2, 4));
     } else {
       hour = int.parse(time.substring(0, 1)) + 12;
-      minute = int.parse(time.substring(2,4));
+      minute = int.parse(time.substring(2, 4));
     }
   } else {
-    if(time.substring(6,8) == "AM"){
+    if (time.substring(6, 8) == "AM") {
       hour = int.parse(time.substring(0, 2));
       minute = int.parse(time.substring(3, 5));
     } else {
       hour = int.parse(time.substring(0, 2)) + 12;
-      minute = int.parse(time.substring(3,5));
+      minute = int.parse(time.substring(3, 5));
     }
   }
   return DateTime(year, month, day, hour, minute);
