@@ -15,11 +15,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-
   ////////////////
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -30,23 +28,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> initializeNotifications() async {
     final AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(
-        android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void showNotification(String eventTitle) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-        'your_channel_id', 'your_channel_name',
-        importance: Importance.max, priority: Priority.high, ticker: 'ticker');
+        AndroidNotificationDetails('your_channel_id', 'your_channel_name',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
 
     const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       0,
@@ -77,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   ////////////////
-
 
   Auth auth = Auth();
   // form key
@@ -390,8 +387,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: MaterialButton(
                     padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                     minWidth: MediaQuery.of(context).size.width,
-                    onPressed: ()  {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterScreen()));
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterScreen()));
                     },
                     child: const Text(
                       "Register",

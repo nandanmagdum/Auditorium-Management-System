@@ -7,8 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:audi/screens/homepage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
- // import 'package:android_alarm_manager/android_alarm_manager.dart';
-
+// import 'package:android_alarm_manager/android_alarm_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,21 +28,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        // fontFamily:
-      ),
+          // fontFamily:
+          ),
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot){
-              if(snapshot.hasData){
-                return const HomePage();
-              } else {
-                return const LoginScreen();
-              }
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return const HomePage();
+            } else {
+              return const LoginScreen();
             }
-      ),
+          }),
     );
   }
 }
-
-
