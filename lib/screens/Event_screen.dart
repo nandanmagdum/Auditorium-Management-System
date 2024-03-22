@@ -67,7 +67,7 @@ class _EventPageState extends State<EventPage> {
       int c2 = starting[i].compareTo(e);
       int c3 = ending[i].compareTo(s);
       int c4 = ending[i].compareTo(e);
-      if(c2 == 0 || c3 == 0) return true;
+      if (c2 == 0 || c3 == 0) return true;
       if ((c1 >= 0 && c1 <= 0) || (c4 >= 0 && c4 <= 0)) {
         // If the start or end time of the current event is equal to the start or end time of any existing event
         return false;
@@ -97,28 +97,56 @@ class _EventPageState extends State<EventPage> {
 
   // function to send email
   void sendEmail(String emailBody) async {
+    List<String> emails = [];
     String username = 'codinghero1234@gmail.com'; // Your email
     String password = 'rqdfitlbhzeyfbxb';
     final smtpServer = gmail(username, password);
-    List<String> emails = [
-      'nandanmagdum@gmail.com',
-      'atharvc2022@gmail.com',
-      'pujachavan789@gmail.com',
-      'sachitbhor1@gmail.com',
-      'nandanmagdum@gmail.com',
-      'omkargurav210@gmail.com'
-    ];
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.addAll(emails)
-      ..subject = 'GCEK Auditorium App Request'
-      ..text = emailBody; // Body of the email
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } catch (e) {
-      print('Error occurred: $e');
-    }
+    final documentsnapshots = await FirebaseFirestore.instance
+        .collection('users')
+        .where('role', isEqualTo: 'admin')
+        .get()
+        .then((value) async {
+      for (var doc in value.docs) {
+        print("admin email = ${doc.data()['email']}");
+        emails.add(doc.data()['email']);
+      }
+
+      // send email
+      print(emails);
+      final message = Message()
+        ..from = Address(username)
+        ..recipients.addAll(emails)
+        ..subject = 'GCEK Auditorium App Request'
+        ..text = emailBody; // Body of the email
+      try {
+        final sendReport = await send(message, smtpServer);
+        print('Message sent: ' + sendReport.toString());
+      } catch (e) {
+        print(':::Error occurred: $e');
+      }
+    });
+
+    // emails = [
+    //   'nandanmagdum@gmail.com',
+    //   'atharvc2022@gmail.com',
+    //   'pujachavan789@gmail.com',
+    //   'sachitbhor1@gmail.com',
+    //   'nandanmagdum14@gmail.com',
+    //   'omkargurav210@gmail.com',
+    //   ''
+    // ];
+    // print(emails);
+    // final message = Message()
+    //   ..from = Address(username)
+    //   ..recipients.addAll(emails)
+    //   ..subject = 'GCEK Auditorium App Request'
+    //   ..text = emailBody; // Body of the email
+    // try {
+    //   final sendReport = await send(message, smtpServer);
+    //   print('Message sent: ' + sendReport.toString());
+    // } catch (e) {
+    //   print('Error occurred: $e');
+    // }
   }
 
   final TextEditingController _dateController = TextEditingController();

@@ -5,26 +5,27 @@ import 'homepage.dart';
 import 'login.dart';
 import 'const.dart';
 import 'package:audi/backend/backend.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
-final _role = [
-  'student',
-  'professor',
-  'admin'
-];
+
+final _role = ['student', 'professor / club member'];
 String? _selectedValue = 'student';
 
 class _RegisterScreenState extends State<RegisterScreen> {
   Auth auth = Auth();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmpasswordController = TextEditingController();
+  final TextEditingController confirmpasswordController =
+      TextEditingController();
   bool IsPassVisible = false;
-  Icon suffix = const Icon(Icons.remove_red_eye_outlined);
+  bool IsConfirmPassVisible = false;
+  Icon suffix = const Icon(Icons.visibility_off);
+  Icon confirmPassSuffix = const Icon(Icons.visibility_off);
   Color adminColor = notselected;
   Color ClubColor = notselected;
   Color StudentColor = selected;
@@ -83,9 +84,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               setState(() {
                 IsPassVisible = !IsPassVisible;
                 if (IsPassVisible == true) {
-                  suffix = const Icon(Icons.remove_red_eye_outlined);
+                  suffix = const Icon(Icons.visibility);
                 } else {
-                  suffix = const Icon(Icons.remove_red_eye);
+                  suffix = const Icon(Icons.visibility_off);
                 }
               });
             },
@@ -101,7 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final confirmpasswordField = TextFormField(
       autofocus: false,
       controller: confirmpasswordController,
-      obscureText: !IsPassVisible,
+      obscureText: !IsConfirmPassVisible,
       validator: (value) {
         RegExp regex = RegExp(r'^.{6,}$');
         if (value!.isEmpty) {
@@ -120,15 +121,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         suffixIcon: GestureDetector(
             onTap: () {
               setState(() {
-                IsPassVisible = !IsPassVisible;
-                if (IsPassVisible == true) {
-                  suffix = const Icon(Icons.remove_red_eye_outlined);
+                IsConfirmPassVisible = !IsConfirmPassVisible;
+                if (IsConfirmPassVisible == true) {
+                  confirmPassSuffix = const Icon(Icons.visibility);
                 } else {
-                  suffix = const Icon(Icons.remove_red_eye);
+                  confirmPassSuffix = const Icon(Icons.visibility_off);
                 }
               });
             },
-            child: suffix),
+            child: confirmPassSuffix),
         prefixIcon: const Icon(Icons.vpn_key),
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         hintText: "Confirm Password",
@@ -137,6 +138,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+    bool isLoading = false;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -147,16 +149,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width,
             ),
-            const Text("Create your account", style: TextStyle(fontSize: 20),),
-            const SizedBox(width: 20,),
+            const Text(
+              "Create your account",
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
             emailField,
             const SizedBox(
               height: 20,
             ),
             passwordField,
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             confirmpasswordField,
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             DropdownButtonFormField(
               items: _role.map((e) {
                 return DropdownMenuItem(
@@ -180,7 +191,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               dropdownColor: Colors.white,
               decoration: kBoxDecoration.copyWith(hintText: 'Select your role'),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Material(
               elevation: 5,
               borderRadius: BorderRadius.circular(10),
@@ -189,30 +202,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                   minWidth: MediaQuery.of(context).size.width,
                   onPressed: () async {
-                    if(emailController.text.isNotEmpty){
+                    isLoading = true;
+                    if (emailController.text.isNotEmpty) {
                       try {
-                        await FirebaseFirestore.instance.collection("users").doc(emailController.text).set({
-                          "email" : emailController.text,
-                          "role" : _selectedValue
+                        await FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(emailController.text)
+                            .set({
+                          "email": emailController.text,
+                          "role": _selectedValue
                         });
                         // print("Database updated");
-                          final user  = await auth
-                              .registeruser(
-                              emailController.text, passwordController.text);
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                        final user = await auth.registeruser(
+                            emailController.text, passwordController.text);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
                         //  else {
                         //   print("Auth is null");
                         //   showErrorSnackbar(context, "Auth is null");
                         // }
                       } catch (e) {
-// ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()),duration: Duration(seconds: 3), ));
-//                         print(e);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(e.toString()),
+                          duration: Duration(seconds: 3),
+                        ));
+                        print(e);
                         showErrorSnackbar(context, e.toString());
                       }
-                    }
-                    else {
+                    } else {
                       // print("Null check error");
                     }
+                    isLoading = false;
                   },
                   child: const Text(
                     "Register",
@@ -223,7 +245,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.bold),
                   )),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
+            if (isLoading) CircularProgressIndicator(),
           ],
         ),
       ),

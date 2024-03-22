@@ -1,60 +1,43 @@
+import 'package:audi/backend/emails.dart';
 import 'package:audi/screens/homepage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 
-class Requests2 extends StatefulWidget {
-  const Requests2({super.key});
+class MyEvents extends StatefulWidget {
+  const MyEvents({super.key});
 
   @override
-  State<Requests2> createState() => _RequestsState();
+  State<MyEvents> createState() => MyEventsState();
 }
 
-class _RequestsState extends State<Requests2> {
+class MyEventsState extends State<MyEvents> {
   List<String> GLOBAL_AUDIENCE = [];
+  Future<void> fetchData() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users') // Replace with your collection name
+          .get();
+
+      List<String> strings = querySnapshot.docs
+          .map((doc) =>
+              doc.get('email') as String) // Replace with your field name
+          .toList();
+
+      setState(() {
+        GLOBAL_AUDIENCE = strings;
+      });
+      print("Global audience fetched");
+      print(":::::::::::::::::::::::::::::::::::::::::${GLOBAL_AUDIENCE}");
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     fetchData();
-  }
-
-  // function to send email to the requester only
-  void sendEmail(String emailBody, String requester) async {
-    String username = 'codinghero1234@gmail.com'; // Your email
-    String password = 'rqdfitlbhzeyfbxb';
-    final smtpServer = gmail(username, password);
-    // TODO : admins only
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.add(requester)
-      ..subject = 'GCEK Auditorium App Rejected your slot request !'
-      ..text = emailBody; // Body of the email
-    try {
-      final sendReport = await send(message, smtpServer);
-      // print('Message sent: ' + sendReport.toString());
-    } catch (e) {
-      // print('Error occurred: $e');
-    }
-  }
-
-  void sendEmail_TO_ALL(String emailBody, List<String> audience) async {
-    String username = 'codinghero1234@gmail.com'; // Your email
-    String password = 'rqdfitlbhzeyfbxb';
-    final smtpServer = gmail(username, password);
-
-    final message = Message()
-      ..from = Address(username)
-      ..recipients.addAll(audience)
-      ..subject = 'New Event at GCEK Auditorium'
-      ..text = emailBody; // Body of the email
-    try {
-      final sendReport = await send(message, smtpServer);
-      // print('Message sent: ' + sendReport.toString());
-    } catch (e) {
-      // print('Error occurred: $e');
-    }
+    super.initState();
   }
 
   @override
@@ -63,7 +46,7 @@ class _RequestsState extends State<Requests2> {
       appBar: AppBar(
         toolbarHeight: 65,
         title: const Text(
-          'Pending Requests',
+          'Your Events',
           style: TextStyle(color: Color(0xFF222B45)),
         ),
         centerTitle: true,
@@ -73,8 +56,9 @@ class _RequestsState extends State<Requests2> {
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection('requestedEvents')
-              .orderBy('requested_datetime', descending: false)
+              .collection('finalEvents')
+              .where('requested_by',
+                  isEqualTo: FirebaseAuth.instance.currentUser!.email)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -365,84 +349,49 @@ class _RequestsState extends State<Requests2> {
                                           });
                                     },
                                     child: const Text("View details")),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      // print("Data is sending");
-                                      await FirebaseFirestore.instance
-                                          .collection('finalEvents')
-                                          .add({
-                                        'eventName':
-                                            message.data()['eventName'],
-                                        'organizer':
-                                            message.data()['organizer'],
-                                        'description':
-                                            message.data()['description'],
-                                        'date': message.data()['date'],
-                                        'startTime':
-                                            message.data()['startTime'],
-                                        'endTime': message.data()['endTime'],
-                                        'category': message.data()['category'],
-                                        'datetime_start':
-                                            message.data()['datetime_start'],
-                                        'datetime_end':
-                                            message.data()['datetime_end'],
-                                        'requested_by':
-                                            message.data()['requested_by'],
-                                        'requested_datetime': message
-                                            .data()['requested_datetime'],
-                                        'accepted_time': DateTime.now()
-                                      });
-                                      // print("data sent");
-                                      List<String> audience = GLOBAL_AUDIENCE;
-                                      String emailBody =
-                                          "Upcoming NEW EVENT AT GCEK AUDITORIUM !\n\n"
-                                          "Event : ${message.data()['eventName']}\n"
-                                          "Organizer : ${message.data()['organizer']}\n"
-                                          "Date of Event : ${date_parse(message.data()['date'])}\n"
-                                          "Description : ${message.data()['description']}\n"
-                                          "Time: ${message.data()['startTime']}\n";
-                                      sendEmail_TO_ALL(emailBody, audience);
-                                      await FirebaseFirestore.instance
-                                          .collection('requestedEvents')
-                                          .doc(message.reference.id)
-                                          .delete();
-                                    } catch (e) {
-                                      // print(e);
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green),
-                                  child: const Text(
-                                    "Accept",
+                                SizedBox(
+                                  width: 5,
+                                ),
+
+                                // datetime_end
+                                if (message
+                                    .data()['datetime_end']
+                                    .toDate()
+                                    .isAfter(DateTime.now()))
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      try {
+                                        List<String> audience = GLOBAL_AUDIENCE;
+                                        String emailBody =
+                                            "Upcoming NEW EVENT AT GCEK AUDITORIUM !\n\n"
+                                            "Event : ${message.data()['eventName']}\n"
+                                            "Organizer : ${message.data()['organizer']}\n"
+                                            "Date of Event : ${date_parse(message.data()['date'])}\n"
+                                            "Description : ${message.data()['description']}\n"
+                                            "Time: ${message.data()['startTime']}\n";
+                                        EMailNotifications.sendEmail_TO_ALL(
+                                            emailBody, audience);
+                                        await FirebaseFirestore.instance
+                                            .collection('requestedEvents')
+                                            .doc(message.reference.id)
+                                            .delete();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          duration: Duration(seconds: 2),
+                                          content: Text(
+                                              "Email Notification Sent !\nYou can send again after 10 minutes"),
+                                        ));
+                                        setState(() {});
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text("Error: ${e}")));
+                                      }
+                                    },
+                                    child: const Text(
+                                      "Send Notification",
+                                    ),
                                   ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      await FirebaseFirestore.instance
-                                          .collection('requestedEvents')
-                                          .doc(message.reference.id)
-                                          .delete();
-                                      String emailBody =
-                                          "Your request for ${message.data()['eventName']} was rejected by the admin\n\n"
-                                          "Event Name: ${message.data()['eventName']}\n"
-                                          "Organizer : ${message.data()['organizer']}\n"
-                                          "Event Description : ${message.data()['description']}\n"
-                                          "Date of request : ${message.data()['date']}\n"
-                                          "Start Time : ${message.data()['startTime']}\n"
-                                          "End Time: ${message.data()['endTime']}\n"
-                                          "You can re-request your slot from the App\n\n";
-                                      sendEmail(emailBody,
-                                          message.data()['requested_by']);
-                                    } catch (e) {
-                                      // print(e);
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red),
-                                  child: const Text("Reject"),
-                                ),
                               ],
                             ),
                           ],
@@ -450,6 +399,11 @@ class _RequestsState extends State<Requests2> {
                       ),
                     ),
                   ),
+                );
+              }
+              if (newCard.length == 0) {
+                return Center(
+                  child: Text("You don't have any Events Yet"),
                 );
               }
               return ListView(
@@ -463,24 +417,5 @@ class _RequestsState extends State<Requests2> {
             );
           }),
     );
-  }
-
-  Future<void> fetchData() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('users') // Replace with your collection name
-          .get();
-
-      List<String> strings = querySnapshot.docs
-          .map((doc) =>
-              doc.get('email') as String) // Replace with your field name
-          .toList();
-
-      setState(() {
-        GLOBAL_AUDIENCE = strings;
-      });
-    } catch (e) {
-      // print('Error fetching data: $e');
-    }
   }
 }

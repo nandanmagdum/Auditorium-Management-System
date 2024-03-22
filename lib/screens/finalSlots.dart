@@ -21,25 +21,32 @@ class _FinalSlotsState extends State<FinalSlots> {
         ),
         centerTitle: true,
         backgroundColor: const Color(0xFFD9D9D9),
-        shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(20)),
+        shape:
+            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('finalEvents').orderBy('datetime_start').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('finalEvents')
+            .orderBy('datetime_start')
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             // print('aasdadsad');
-            return const Text("No data");   
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }
           final messages = snapshot.data!.docs;
           List<Padding> card = [];
           for (var message in messages) {
-            int comparisonResult = DateTime.parse(message.data()['date'] + " 00:00:00").compareTo(DateTime.now());
+            int comparisonResult =
+                DateTime.parse(message.data()['date'] + " 00:00:00")
+                    .compareTo(DateTime.now());
             {
               card.add(
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8.0, right: 8.0, top: 8.0),
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: Container(
                     height: 155,
                     width: 350,
@@ -61,8 +68,7 @@ class _FinalSlotsState extends State<FinalSlots> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
@@ -92,7 +98,9 @@ class _FinalSlotsState extends State<FinalSlots> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  const SizedBox(width: 20,),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
                                   Text(
                                     "Date: ${date_parse(message.data()['date'].toString())}",
                                     style: const TextStyle(
@@ -137,65 +145,188 @@ class _FinalSlotsState extends State<FinalSlots> {
                                 ),
                               ),
                               GestureDetector(
-                                  onTap: (){
-                                    showModalBottomSheet(context: context,
-                                        builder: (builder){
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (builder) {
                                           return Scaffold(
                                             backgroundColor: Colors.white10,
-                                            appBar: AppBar(backgroundColor: Colors.white10,title: const Text("Event Details"),centerTitle: true,),
+                                            appBar: AppBar(
+                                              backgroundColor: Colors.white10,
+                                              title:
+                                                  const Text("Event Details"),
+                                              centerTitle: true,
+                                            ),
                                             body: Container(
-                                              height: MediaQuery.of(context).size.height,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
                                               decoration: const BoxDecoration(
                                                 borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(50.0),
-                                                  topRight: Radius.circular(50.0),
+                                                  topLeft:
+                                                      Radius.circular(50.0),
+                                                  topRight:
+                                                      Radius.circular(50.0),
                                                 ),
                                               ),
                                               child: SingleChildScrollView(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: Column(
                                                     // mainAxisAlignment: MainAxisAlignment.center,
                                                     // crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                      const SizedBox(height: 10,),
-                                                      Text("Event: ${message.data()['eventName'].toString()}", style: const TextStyle(fontSize: 30, color: Colors.black, fontWeight: FontWeight.w700), textAlign: TextAlign.center,),
-                                                      const SizedBox(height: 10,),
-                                                      Text("Organizer: ${message.data()['organizer']}", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start,),
-                                                      const SizedBox(height: 10,),
-                                                      Text("Date: ${date_parse(message.data()['date'].toString())}", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                      const SizedBox(height: 10,),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        "Event: ${message.data()['eventName'].toString()}",
+                                                        style: const TextStyle(
+                                                            fontSize: 30,
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        "Organizer: ${message.data()['organizer']}",
+                                                        style: const TextStyle(
+                                                          fontSize: 26,
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                          "Date: ${date_parse(message.data()['date'].toString())}",
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 26,
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
-                                                          const Text("Time:  ", style: TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                          Text("${message.data()['startTime'].toString()}  to  ", style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                          Text(message.data()['endTime'].toString(), style: const TextStyle(fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                          const Text("Time:  ",
+                                                              style: TextStyle(
+                                                                fontSize: 26,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                          Text(
+                                                              "${message.data()['startTime'].toString()}  to  ",
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 26,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                          Text(
+                                                              message
+                                                                  .data()[
+                                                                      'endTime']
+                                                                  .toString(),
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 26,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ],
                                                       ),
-                                                      const SizedBox(height: 10,),
-                                                      const Text("Event Description: ", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
-                                                      const SizedBox(height: 10,),
-                                                      Container(
-                                                        padding: const EdgeInsets.all(10),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey),
-                                                          borderRadius: BorderRadius.circular(5),
-                                                        ),
-                                                        child: Text(message.data()['description'].toString(), style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500,), textAlign: TextAlign.start),
+                                                      const SizedBox(
+                                                        height: 10,
                                                       ),
-
+                                                      const Text(
+                                                          "Event Description: ",
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                        child: Text(
+                                                            message
+                                                                .data()[
+                                                                    'description']
+                                                                .toString(),
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .start),
+                                                      ),
                                                     ],
-
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           );
-                                        }
-                                    );
-                                  }
-                                  ,child: const Text("View More")),
+                                        });
+                                  },
+                                  child: const Text("View More")),
                             ],
                           ),
                         ],
@@ -205,10 +336,13 @@ class _FinalSlotsState extends State<FinalSlots> {
                 ),
               );
             }
-
           }
-          if(card.isEmpty) {
-            return const Center(child: Text("There are no upcomming events\n stay tuned", style: TextStyle(fontSize: 20),));
+          if (card.isEmpty) {
+            return const Center(
+                child: Text(
+              "There are no upcomming events\n stay tuned",
+              style: TextStyle(fontSize: 20),
+            ));
           }
           return ListView(
             children: card,
@@ -218,5 +352,3 @@ class _FinalSlotsState extends State<FinalSlots> {
     );
   }
 }
-
-
