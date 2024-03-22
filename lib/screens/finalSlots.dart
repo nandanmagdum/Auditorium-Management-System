@@ -48,8 +48,6 @@ class _FinalSlotsState extends State<FinalSlots> {
                   padding:
                       const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: Container(
-                    height: 155,
-                    width: 350,
                     margin: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         color: Colors.white,

@@ -4,9 +4,9 @@ import 'package:audi/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 import 'package:audi/screens/homepage.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:android_alarm_manager/android_alarm_manager.dart';
 
 void main() async {
@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          // fontFamily:
-          ),
+        fontFamily: GoogleFonts.poppins().fontFamily,
+      ),
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),

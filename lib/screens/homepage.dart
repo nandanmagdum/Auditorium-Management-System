@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:audi/screens/Event_screen.dart';
+import 'package:audi/screens/developers_page.dart';
 import 'package:audi/screens/my_events.dart';
 import 'package:audi/screens/request2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -148,7 +151,7 @@ class _HomePageState extends State<HomePage> {
     // Start loading data
     initializeData();
     // Simulate a delay of 2 seconds before stopping the loading indicator
-    Timer(Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 2), () {
       setState(() {
         _isLoading = false;
       });
@@ -166,7 +169,7 @@ class _HomePageState extends State<HomePage> {
 
     if (_isLoading) {
       // Show CircularProgressIndicator while data is loading
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -199,54 +202,93 @@ class _HomePageState extends State<HomePage> {
                       textColor: Colors.white,
                     )),
                 if (_userRole != 'student')
-                  ListTile(
-                    leading: const Icon(Icons.add_alert_outlined),
-                    title: const Text('Your Events'),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MyEvents()));
-                    },
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.add_alert_outlined),
+                      title: const Text('Your Events'),
+                      trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                          color: Color(0xFF22223b)),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyEvents()));
+                      },
+                    ),
                   ),
                 if (_userRole == 'admin')
-                  ListTile(
-                    leading: const Icon(Icons.add_alert_outlined),
-                    title: const Text('Auditorium Requests'),
+                  Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.add_alert_outlined),
+                      title: const Text('Auditorium Requests'),
+                      trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                          color: Color(0xFF22223b)),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Requests2()));
+                      },
+                    ),
+                  ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.book, color: Color(0xFF22223b)),
+                    title: const Text('Booked Slots'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        color: Color(0xFF22223b)),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Requests2()));
+                              builder: (context) => const FinalSlots()));
                     },
                   ),
-                ListTile(
-                  leading: const Icon(Icons.add_alert_outlined),
-                  title: const Text('Booked Slots'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FinalSlots()));
-                  },
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.add_alert_outlined),
-                  title: const Text('Upcoming Events'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const UpcomingEvents()));
-                  },
+                // const Divider(),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.upcoming_rounded,
+                        color: Color(0xFF22223b)),
+                    title: const Text('Upcoming Events'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        color: Color(0xFF22223b)),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const UpcomingEvents()));
+                    },
+                  ),
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.key),
-                  title: const Text('User Logout'),
-                  onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                  },
+                // const Divider(),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.key, color: Color(0xFF22223b)),
+                    title: const Text('User Logout'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        color: Color(0xFF22223b)),
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                    },
+                  ),
                 ),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.computer_rounded,
+                        color: Color(0xFF22223b)),
+                    title: const Text('Developers'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        color: Color(0xFF22223b)),
+                    onTap: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DevelopersPage()));
+                    },
+                  ),
+                ),
+                // Spacer(),
               ],
             ),
           ),
@@ -365,7 +407,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const Divider(endIndent: 15, indent: 15),
+                  // const Divider(endIndent: 15, indent: 15),
                   Flexible(
                     child: ShaderMask(
                       shaderCallback: (Rect bounds) {
@@ -506,13 +548,6 @@ class _HomePageState extends State<HomePage> {
                                                         return Scaffold(
                                                           backgroundColor:
                                                               Colors.white10,
-                                                          appBar: AppBar(
-                                                            backgroundColor:
-                                                                Colors.white10,
-                                                            title: const Text(
-                                                                "Event Details"),
-                                                            centerTitle: true,
-                                                          ),
                                                           body: Container(
                                                             height:
                                                                 MediaQuery.of(
@@ -543,15 +578,29 @@ class _HomePageState extends State<HomePage> {
                                                                   // mainAxisAlignment: MainAxisAlignment.center,
                                                                   // crossAxisAlignment: CrossAxisAlignment.center,
                                                                   children: [
-                                                                    const SizedBox(
-                                                                      height:
-                                                                          10,
+                                                                    // const SizedBox(
+                                                                    //     height:
+                                                                    //         10),
+                                                                    const Divider(
+                                                                        thickness:
+                                                                            3,
+                                                                        indent:
+                                                                            100,
+                                                                        endIndent:
+                                                                            100),
+                                                                    const Text(
+                                                                      "Event Details",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              30,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
                                                                     ),
                                                                     Text(
                                                                       "Event: ${message.data()['eventName'].toString()}",
                                                                       style: const TextStyle(
                                                                           fontSize:
-                                                                              30,
+                                                                              25,
                                                                           color: Colors
                                                                               .black,
                                                                           fontWeight:
@@ -723,7 +772,7 @@ class _HomePageState extends State<HomePage> {
           ),
           floatingActionButton: (_userRole == 'student')
               ? null
-              : ElevatedButton(
+              : FloatingActionButton(
                   onPressed: () {
                     // print(role);
                     Navigator.push(
