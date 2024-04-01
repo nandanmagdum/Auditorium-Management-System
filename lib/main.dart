@@ -15,10 +15,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-
-  //background tasks
-
-  //background tasks
 }
 
 class MyApp extends StatelessWidget {
